@@ -488,7 +488,7 @@ function renderComplete() {
         <div class="suggestion-item">😴 Get quality sleep tonight.</div>
       </div>
     </div>
-    <button data-act="add-to-home-screen" class="btn btn-outline" type="button">Add to Home Screen</button>
+    <button data-act="open-feedback-form" class="btn btn-outline" type="button">Give feedback</button>
     <button data-act="finish-workout" class="btn btn-primary" type="button">Back to main screen</button>
     ${renderInstallHelpModal()}
   `;
@@ -716,11 +716,6 @@ function handleAction(action, exerciseIndex = null, tierIndex = null) {
     state.lastFeedback = null;
     state.workoutReadyForNext = true;
     state.installHelpOpen = false;
-  }
-
-  if (action === "add-to-home-screen") {
-    launchAddToHomeScreen();
-    return;
   }
 
   if (action === "close-install-help") {
