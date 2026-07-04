@@ -119,8 +119,25 @@ function render() {
   if (state.view === "exerciseDone") renderExerciseDone();
   if (state.view === "complete") renderComplete();
 
+  renderIdeaButton();
+
   wireEvents();
   saveState();
+}
+
+function renderIdeaButton() {
+  appScreen.insertAdjacentHTML(
+    "beforeend",
+    `
+      <button
+        class="idea-fab"
+        data-act="open-feedback-form"
+        type="button"
+        aria-label="Share feedback"
+        title="Share feedback"
+      >💡</button>
+    `,
+  );
 }
 
 function renderMain() {
@@ -648,6 +665,11 @@ function handleAction(action, exerciseIndex = null, tierIndex = null) {
     state.activeSetIndex = 0;
     state.lastFeedback = null;
     state.workoutReadyForNext = true;
+  }
+
+  if (action === "open-feedback-form") {
+    const formUrl = "https://forms.gle/9hJMH3bbTNL8d5nu6";
+    window.open(formUrl, "_blank", "noopener,noreferrer");
   }
 
   render();

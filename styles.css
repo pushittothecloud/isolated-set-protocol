@@ -54,6 +54,7 @@ body {
   width: 100%;
   height: 100%;
   min-height: 0;
+  position: relative;
   border-radius: 17px;
   background: radial-gradient(circle at 28% 0%, #0f2019 0%, transparent 40%),
     radial-gradient(circle at 70% 20%, #121a29 0%, transparent 45%), var(--phone-bg);
@@ -629,6 +630,29 @@ body {
 
 .spacer {
   height: 8px;
+}
+
+.idea-fab {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid #355ea5;
+  background: #1a2434;
+  color: #ffd45c;
+  font-size: 1.2rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(79, 141, 255, 0.2);
+  z-index: 20;
+}
+
+.idea-fab:hover {
+  background: #233149;
 }
 
 @keyframes fadeIn {
