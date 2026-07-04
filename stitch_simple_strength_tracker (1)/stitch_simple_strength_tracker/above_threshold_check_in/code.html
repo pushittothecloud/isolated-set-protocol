@@ -1,0 +1,210 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#393939",
+                    "background": "#131313",
+                    "on-primary-fixed": "#001a41",
+                    "inverse-on-surface": "#313030",
+                    "on-background": "#e5e2e1",
+                    "on-secondary-fixed-variant": "#005321",
+                    "surface-dim": "#131313",
+                    "secondary-fixed-dim": "#4ae176",
+                    "on-primary-container": "#00285c",
+                    "primary-fixed-dim": "#adc6ff",
+                    "primary": "#adc6ff",
+                    "on-tertiary-fixed-variant": "#574500",
+                    "on-secondary": "#003915",
+                    "error-container": "#93000a",
+                    "tertiary-container": "#cea700",
+                    "surface-container-low": "#1c1b1b",
+                    "primary-container": "#4b8eff",
+                    "on-secondary-fixed": "#002109",
+                    "error": "#ffb4ab",
+                    "surface-tint": "#adc6ff",
+                    "on-surface": "#e5e2e1",
+                    "outline": "#8b90a0",
+                    "surface-variant": "#353534",
+                    "tertiary-fixed-dim": "#eec200",
+                    "on-error": "#690005",
+                    "secondary-container": "#00b954",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-container-high": "#2a2a2a",
+                    "outline-variant": "#414755",
+                    "inverse-surface": "#e5e2e1",
+                    "on-tertiary-container": "#4e3e00",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-primary-fixed-variant": "#004493",
+                    "surface": "#131313",
+                    "tertiary-fixed": "#ffe083",
+                    "on-primary": "#002e69",
+                    "inverse-primary": "#005bc1",
+                    "on-secondary-container": "#004119",
+                    "secondary": "#4ae176",
+                    "on-tertiary-fixed": "#231b00",
+                    "tertiary": "#eec200",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-highest": "#353534",
+                    "surface-container": "#201f1f",
+                    "secondary-fixed": "#6bff8f",
+                    "on-surface-variant": "#c1c6d7",
+                    "on-tertiary": "#3c2f00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "sm": "8px",
+                    "container-margin": "20px",
+                    "md": "16px",
+                    "touch-target": "48px",
+                    "xl": "40px",
+                    "gutter": "16px",
+                    "lg": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "stat-xl": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "stat-xl": ["40px", {"lineHeight": "40px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #121212;
+            color: #e5e2e1;
+            overflow: hidden;
+        }
+        .bezel-card {
+            border: 1px solid #3F3F46;
+            background-color: #1E1E1E;
+        }
+        .kinetic-accent {
+            background-color: #4b8eff; /* Electric Blue Accent */
+        }
+        .text-electric-blue {
+            color: #adc6ff;
+        }
+        .pulse-slow {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen items-center justify-center p-container-margin">
+<!-- Subtle Atmospheric Background Shader -->
+<div class="fixed inset-0 z-0 pointer-events-none opacity-20">
+
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 w-full max-w-md flex flex-col items-center text-center">
+<!-- Header Text -->
+<p class="font-label-md text-label-md text-on-surface-variant tracking-[0.2em] uppercase mb-sm">
+            Milestone Reached
+        </p>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tighter mb-xl">
+            CLEARED 10
+        </h1>
+<!-- High-Contrast Rep Counter Card -->
+<div class="bezel-card w-full p-lg rounded-xl flex flex-col items-center justify-center mb-xl relative overflow-hidden">
+<!-- Left-aligned accent bar for Kinetic Dark aesthetic -->
+<div class="absolute left-0 top-0 bottom-0 w-1 kinetic-accent"></div>
+<div class="relative py-md">
+<span class="font-stat-xl text-stat-xl text-electric-blue block">
+                    11 REPS
+                </span>
+<!-- Progress Indicator -->
+<div class="mt-md flex gap-xs">
+<!-- Complete dots -->
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<div class="w-2 h-2 rounded-full kinetic-accent"></div>
+<!-- Current Rep -->
+<div class="w-2 h-2 rounded-full kinetic-accent pulse-slow"></div>
+<!-- Remaining to 15 -->
+<div class="w-2 h-2 rounded-full bg-[#2C2C2C]"></div>
+<div class="w-2 h-2 rounded-full bg-[#2C2C2C]"></div>
+<div class="w-2 h-2 rounded-full bg-[#2C2C2C]"></div>
+<div class="w-2 h-2 rounded-full bg-[#2C2C2C]"></div>
+</div>
+</div>
+</div>
+<!-- Supportive Note -->
+<div class="px-container-margin mb-xl">
+<p class="font-body-lg text-body-lg text-on-surface mb-sm">
+                Solid effort.
+            </p>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">If your reps are slipping, try taking a longer rest between sets and get motivated with some high-energy music.</p>
+</div>
+<!-- Action Area -->
+<div class="w-full flex flex-col gap-md">
+<!-- Primary Action -->
+<button class="w-full h-[64px] kinetic-accent text-on-primary font-label-md text-label-md tracking-widest uppercase rounded-lg active:scale-95 transition-transform duration-100 flex items-center justify-center gap-sm">
+                CONTINUE AT CURRENT WEIGHT
+                <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 700;">arrow_forward</span>
+</button>
+<!-- Secondary Action -->
+<button class="w-full h-[56px] border border-outline-variant text-on-surface font-label-md text-label-md tracking-widest uppercase rounded-lg hover:bg-surface-variant active:scale-95 transition-all duration-100">
+                ADJUST WEIGHT
+            </button>
+</div>
+</main>
+<!-- Subtle Micro-interaction script -->
+<script>
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('touchstart', () => {
+                // Subtle haptic feedback feel
+                button.style.opacity = '0.8';
+            });
+            button.addEventListener('touchend', () => {
+                button.style.opacity = '1';
+            });
+        });
+    </script>
+
+
+</body></html>

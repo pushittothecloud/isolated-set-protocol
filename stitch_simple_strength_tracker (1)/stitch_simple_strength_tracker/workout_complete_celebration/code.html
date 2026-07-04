@@ -1,0 +1,283 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Workout Complete | TRAIN</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e5e2e1;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .electric-glow {
+            box-shadow: 0 0 20px rgba(74, 225, 118, 0.2);
+        }
+
+        .bezel-border {
+            border: 1px solid #3F3F46;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.98); }
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .kinetic-bg {
+            background: radial-gradient(circle at 50% 50%, #1e1e1e 0%, #121212 100%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#00b954",
+                        "primary-fixed": "#d8e2ff",
+                        "on-secondary": "#003915",
+                        "outline": "#8b90a0",
+                        "on-tertiary-fixed": "#231b00",
+                        "tertiary-fixed": "#ffe083",
+                        "on-surface": "#e5e2e1",
+                        "surface-variant": "#353534",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container": "#201f1f",
+                        "on-tertiary-fixed-variant": "#574500",
+                        "surface": "#131313",
+                        "on-error": "#690005",
+                        "surface-bright": "#393939",
+                        "surface-tint": "#adc6ff",
+                        "surface-dim": "#131313",
+                        "secondary-fixed-dim": "#4ae176",
+                        "on-secondary-fixed": "#002109",
+                        "surface-container-low": "#1c1b1b",
+                        "outline-variant": "#414755",
+                        "on-surface-variant": "#c1c6d7",
+                        "on-primary-fixed-variant": "#004493",
+                        "inverse-on-surface": "#313030",
+                        "tertiary-container": "#cea700",
+                        "inverse-surface": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "background": "#121212",
+                        "tertiary": "#eec200",
+                        "primary-container": "#4b8eff",
+                        "primary": "#adc6ff",
+                        "on-secondary-container": "#004119",
+                        "error-container": "#93000a",
+                        "on-primary": "#002e69",
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed": "#001a41",
+                        "tertiary-fixed-dim": "#eec200",
+                        "inverse-primary": "#005bc1",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-primary-container": "#00285c",
+                        "on-tertiary-container": "#4e3e00",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#4ae176",
+                        "on-tertiary": "#3c2f00",
+                        "secondary-fixed": "#6bff8f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "40px",
+                        "unit": "4px",
+                        "touch-target": "48px",
+                        "md": "16px",
+                        "container-margin": "20px",
+                        "gutter": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "stat-xl": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "title-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "stat-xl": ["40px", {"lineHeight": "40px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="kinetic-bg min-h-screen flex flex-col items-center justify-center p-container-margin overflow-hidden">
+<!-- Atmospheric Shader Background -->
+<div class="fixed inset-0 z-0 opacity-20 pointer-events-none">
+
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 w-full max-w-lg flex flex-col items-center text-center">
+<!-- Victory Icon / Visual Anchor -->
+<div class="mb-xl relative">
+<div class="absolute inset-0 bg-secondary rounded-full blur-2xl opacity-10 animate-pulse"></div>
+<div class="w-32 h-32 bg-surface-container rounded-full flex items-center justify-center bezel-border relative overflow-hidden">
+<span class="material-symbols-outlined text-secondary text-[64px]" style="font-variation-settings: 'FILL' 1;">
+                    celebration
+                </span>
+</div>
+</div>
+<!-- Headline -->
+<h1 class="font-display-lg text-display-lg text-on-surface uppercase tracking-tighter mb-md">
+            WORKOUT COMPLETE
+        </h1>
+<!-- Congratulatory Message -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xs mb-xl">
+            Great session. Now time to refuel with carbs and protein, and get some quality sleep.
+        </p>
+<!-- Bento Stats Grid -->
+<div class="grid grid-cols-2 gap-md w-full mb-xl">
+<div class="bg-surface-container-low bezel-border p-lg rounded-xl flex flex-col items-start justify-between min-h-[120px]" style="opacity: 1; transform: translateY(0px); transition: 0.5s ease-out 0.3s;">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Duration</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-stat-xl text-stat-xl text-on-surface">64</span>
+<span class="font-label-md text-label-md text-on-surface-variant">MIN</span>
+</div>
+</div>
+<div class="bg-surface-container-low bezel-border p-lg rounded-xl flex flex-col items-start justify-between min-h-[120px]" style="opacity: 1; transform: translateY(0px); transition: 0.5s ease-out 0.4s;">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Volume</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-stat-xl text-stat-xl text-on-surface">12.4</span>
+<span class="font-label-md text-label-md text-on-surface-variant">TONS</span>
+</div>
+</div>
+<div class="col-span-2 bg-surface-container-low bezel-border p-lg rounded-xl flex items-center justify-between">
+<div class="flex flex-col items-start">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Most Improved</span>
+<span class="font-title-md text-title-md text-on-surface">Bench Press</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-stat-xl text-stat-xl text-secondary">+5</span>
+<span class="font-label-md text-label-md text-on-surface-variant">LBS</span>
+</div>
+</div>
+</div>
+<!-- Recovery Tip Cards -->
+<div class="w-full space-y-md mb-xl"><!-- First: Refuel Strategy (Carbs) -->
+<div class="flex items-center gap-md p-md bg-surface-container-lowest bezel-border rounded-lg text-left">
+<div class="w-12 h-12 flex-shrink-0 bg-secondary-container/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">nutrition</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Refuel Strategy (Carbs)</h3>
+<p class="text-[12px] text-on-surface-variant leading-tight">60g Carbs for rapid glycogen recovery.</p>
+</div>
+</div>
+<!-- Second: Protein for Repair -->
+<div class="flex items-center gap-md p-md bg-surface-container-lowest bezel-border rounded-lg text-left">
+<div class="w-12 h-12 flex-shrink-0 bg-secondary-container/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Protein for Repair</h3>
+<p class="text-[12px] text-on-surface-variant leading-tight">30g Protein for muscular tissue repair.</p>
+</div>
+</div>
+<!-- Third: Foundational Recovery -->
+<div class="flex items-center gap-md p-md bg-surface-container-lowest bezel-border rounded-lg text-left">
+<div class="w-12 h-12 flex-shrink-0 bg-tertiary-container/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">bedtime</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Foundational Recovery</h3>
+<p class="text-[12px] text-on-surface-variant leading-tight">Hydration + 8.5h sleep are non-negotiable.</p>
+</div>
+</div></div>
+<!-- Primary Action -->
+<button class="w-full h-[64px] bg-secondary text-on-secondary font-label-md text-label-md uppercase tracking-widest rounded-xl shadow-lg active:scale-95 transition-all duration-200 hover:brightness-110 flex items-center justify-center gap-sm" onclick="handleFinish()">
+<span class="">Finish Workout</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</main>
+<!-- Success Celebration Effect -->
+<div class="fixed inset-0 pointer-events-none z-50" id="celebration-particles"><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(173, 198, 255); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div><div style="position: absolute; width: 4px; height: 4px; background-color: rgb(74, 225, 118); left: 50%; top: 40%; border-radius: 50%;"></div></div>
+<script>
+        function handleFinish() {
+            // Simulated return to main screen with a fade-out
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                window.location.reload(); // Simple reset for demo purposes
+            }, 500);
+        }
+
+        // Micro-interaction: Stats reveal
+        document.addEventListener('DOMContentLoaded', () => {
+            const stats = document.querySelectorAll('.grid > div');
+            stats.forEach((stat, index) => {
+                stat.style.opacity = '0';
+                stat.style.transform = 'translateY(20px)';
+                stat.style.transition = `all 0.5s ease-out ${index * 0.1 + 0.3}s`;
+                setTimeout(() => {
+                    stat.style.opacity = '1';
+                    stat.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+
+        // Simple Particle Burst
+        function createParticles() {
+            const container = document.getElementById('celebration-particles');
+            for(let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.style.position = 'absolute';
+                p.style.width = '4px';
+                p.style.height = '4px';
+                p.style.backgroundColor = Math.random() > 0.5 ? '#4ae176' : '#adc6ff';
+                p.style.left = '50%';
+                p.style.top = '40%';
+                p.style.borderRadius = '50%';
+                container.appendChild(p);
+
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 5 + Math.random() * 10;
+                const tx = Math.cos(angle) * velocity * 20;
+                const ty = Math.sin(angle) * velocity * 20;
+
+                p.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 1000,
+                    easing: 'cubic-bezier(0, .9, .57, 1)',
+                    fill: 'forwards'
+                });
+            }
+        }
+        
+        setTimeout(createParticles, 500);
+    </script>
+
+
+</body></html>

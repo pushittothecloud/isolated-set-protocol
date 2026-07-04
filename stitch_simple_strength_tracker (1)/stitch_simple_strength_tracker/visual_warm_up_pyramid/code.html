@@ -1,0 +1,181 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#4ae176",
+                    "on-tertiary-fixed": "#231b00",
+                    "on-surface": "#e5e2e1",
+                    "on-secondary-container": "#004119",
+                    "surface-dim": "#131313",
+                    "on-primary-container": "#00285c",
+                    "tertiary": "#eec200",
+                    "inverse-surface": "#e5e2e1",
+                    "secondary-container": "#00b954",
+                    "surface-container-low": "#1c1b1b",
+                    "tertiary-container": "#cea700",
+                    "surface-container-high": "#2a2a2a",
+                    "primary": "#adc6ff",
+                    "tertiary-fixed-dim": "#eec200",
+                    "primary-container": "#4b8eff",
+                    "on-tertiary-container": "#4e3e00",
+                    "surface-variant": "#353534",
+                    "surface": "#131313",
+                    "on-surface-variant": "#c1c6d7",
+                    "on-secondary-fixed-variant": "#005321",
+                    "on-primary-fixed": "#001a41",
+                    "on-primary-fixed-variant": "#004493",
+                    "on-tertiary": "#3c2f00",
+                    "inverse-primary": "#005bc1",
+                    "surface-container-highest": "#353534",
+                    "inverse-on-surface": "#313030",
+                    "on-tertiary-fixed-variant": "#574500",
+                    "on-secondary-fixed": "#002109",
+                    "secondary-fixed": "#6bff8f",
+                    "surface-bright": "#393939",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#4ae176",
+                    "surface-container": "#201f1f",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-tint": "#adc6ff",
+                    "on-error": "#690005",
+                    "tertiary-fixed": "#ffe083",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e5e2e1",
+                    "on-primary": "#002e69",
+                    "primary-fixed-dim": "#adc6ff",
+                    "outline-variant": "#414755",
+                    "surface-container-lowest": "#0e0e0e",
+                    "background": "#131313",
+                    "on-secondary": "#003915",
+                    "outline": "#8b90a0",
+                    "error": "#ffb4ab"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "touch-target": "48px",
+                    "gutter": "16px",
+                    "container-margin": "20px",
+                    "xl": "40px",
+                    "md": "16px",
+                    "unit": "4px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "stat-xl": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "title-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "stat-xl": ["40px", {"lineHeight": "40px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    }catch(_e){}</script></head><body class="flex flex-col min-h-screen">
+    <!-- TopAppBar -->
+    <header class="w-full top-0 sticky z-40 bg-background dark:bg-background border-b border-outline-variant flex justify-between items-center px-container-margin h-touch-target">
+        <button class="flex items-center justify-center w-10 h-10 hover:bg-surface-variant transition-colors active:scale-95 duration-100 rounded-full">
+            <span class="material-symbols-outlined text-primary">close</span>
+        </button>
+        <h1 class="font-display-lg text-[24px] text-primary uppercase tracking-tighter">TRAIN</h1>
+        <button class="flex items-center justify-center w-10 h-10 hover:bg-surface-variant transition-colors active:scale-95 duration-100 rounded-full">
+            <span class="material-symbols-outlined text-primary">help_outline</span>
+        </button>
+    </header>
+
+    <main class="flex-grow flex flex-col p-container-margin pb-32">
+        <!-- Status Header Section -->
+        <div class="mb-lg animate-in fade-in slide-in-from-top-4 duration-500">
+            <div class="flex items-center gap-2 mb-xs">
+                <span class="material-symbols-outlined text-secondary text-[20px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Preparation Phase</span>
+            </div>
+            <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-xs uppercase">WARM-UP SETS</h2>
+            
+        </div>
+
+        <!-- Exercise Context Card -->
+        <div class="tonal-card relative p-md rounded-xl mb-xl overflow-hidden">
+            <div class="active-accent-bar"></div>
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="font-title-md text-title-md text-on-surface">Barbell Bench Press</h3>
+                    
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center border border-outline-variant">
+                    <span class="material-symbols-outlined text-primary-container">fitness_center</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Pyramid Structure -->
+        <div class="flex flex-col gap-md animate-in fade-in duration-500">
+            <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest ml-1 text-center">Warm-up Pyramid</h3>
+            
+            <div class="flex flex-col items-center gap-sm">
+                <!-- 110% Potentiation (Top) -->
+                <div class="w-[60%] flex flex-col items-center justify-center p-sm bg-surface-container-low border border-outline-variant rounded-xl opacity-40">
+                    <p class="font-label-md text-on-surface text-center">Potentiation</p>
+                    <p class="font-title-md text-on-surface text-center">1 Rep @ 110%</p>
+                    
+                </div>
+
+                <!-- 75% Set -->
+                <div class="w-[75%] flex items-center justify-center p-md bg-surface-container-low border border-outline-variant rounded-xl opacity-60">
+                    <p class="font-title-md text-on-surface">3 Reps @ 75%</p>
+                </div>
+
+                <!-- 50% Set -->
+                <div class="w-[85%] flex items-center justify-center p-md bg-surface-container-low border border-outline-variant rounded-xl opacity-80">
+                    <p class="font-title-md text-on-surface">5 Reps @ 50%</p>
+                </div>
+
+                <!-- 10% Set (Base - Active) -->
+                <div class="w-full flex items-center justify-between p-md bg-surface-container-low border-2 border-secondary rounded-xl shadow-[0_0_15px_rgba(74,225,118,0.15)]">
+                    <div class="flex items-center gap-md">
+                        <p class="font-title-md text-secondary">10 Reps @ 10%</p>
+                    </div>
+                    <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Action Bar -->
+    <div class="fixed bottom-0 left-0 w-full p-container-margin bg-background/80 backdrop-blur-md border-t border-outline-variant z-50">
+        <button class="w-full h-14 bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-[0.1em] rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all duration-200 shadow-lg shadow-secondary/20">
+            LOG WARM-UP &amp; START WORKOUT
+            <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+    </div>
+
+    <!-- BottomNavBar (Hidden) -->
+    <nav class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center h-20 px-2 pb-safe bg-surface-container-low border-t border-outline-variant opacity-20 pointer-events-none sm:hidden">
+        <div class="flex flex-col items-center justify-center text-on-surface-variant">
+            <span class="material-symbols-outlined">fitness_center</span>
+            <span class="font-label-md text-label-md">Workouts</span>
+        </div>
+        <div class="flex flex-col items-center justify-center text-on-surface-variant">
+            <span class="material-symbols-outlined">history</span>
+            </div></nav></body></html>

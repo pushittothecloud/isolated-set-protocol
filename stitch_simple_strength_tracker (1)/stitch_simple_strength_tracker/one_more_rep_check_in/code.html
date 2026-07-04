@@ -1,0 +1,182 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#393939",
+                    "background": "#121212",
+                    "on-primary-fixed": "#001a41",
+                    "inverse-on-surface": "#313030",
+                    "on-background": "#e5e2e1",
+                    "on-secondary-fixed-variant": "#005321",
+                    "surface-dim": "#131313",
+                    "secondary-fixed-dim": "#4ae176",
+                    "on-primary-container": "#00285c",
+                    "primary-fixed-dim": "#adc6ff",
+                    "primary": "#adc6ff",
+                    "on-tertiary-fixed-variant": "#574500",
+                    "on-secondary": "#003915",
+                    "error-container": "#93000a",
+                    "tertiary-container": "#cea700",
+                    "surface-container-low": "#1c1b1b",
+                    "primary-container": "#4b8eff",
+                    "on-secondary-fixed": "#002109",
+                    "error": "#ffb4ab",
+                    "surface-tint": "#adc6ff",
+                    "on-surface": "#e5e2e1",
+                    "outline": "#8b90a0",
+                    "surface-variant": "#353534",
+                    "tertiary-fixed-dim": "#eec200",
+                    "on-error": "#690005",
+                    "secondary-container": "#00b954",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-container-high": "#2a2a2a",
+                    "outline-variant": "#414755",
+                    "inverse-surface": "#e5e2e1",
+                    "on-tertiary-container": "#4e3e00",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-primary-fixed-variant": "#004493",
+                    "surface": "#131313",
+                    "tertiary-fixed": "#ffe083",
+                    "on-primary": "#002e69",
+                    "inverse-primary": "#005bc1",
+                    "on-secondary-container": "#004119",
+                    "secondary": "#4ae176",
+                    "on-tertiary-fixed": "#231b00",
+                    "tertiary": "#eec200",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-highest": "#353534",
+                    "surface-container": "#201f1f",
+                    "secondary-fixed": "#6bff8f",
+                    "on-surface-variant": "#c1c6d7",
+                    "on-tertiary": "#3c2f00",
+                    "electric-blue": "#4b8eff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "sm": "8px",
+                    "container-margin": "20px",
+                    "md": "16px",
+                    "touch-target": "48px",
+                    "xl": "40px",
+                    "gutter": "16px",
+                    "lg": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter", "sans-serif"],
+                    "label-md": ["Inter", "sans-serif"],
+                    "headline-lg-mobile": ["Inter", "sans-serif"],
+                    "body-lg": ["Inter", "sans-serif"],
+                    "title-md": ["Inter", "sans-serif"],
+                    "stat-xl": ["Inter", "sans-serif"],
+                    "headline-lg": ["Inter", "sans-serif"],
+                    "body-md": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "stat-xl": ["40px", {"lineHeight": "40px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #121212;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Subtle pulse for the almost-there progress circle */
+        @keyframes subtle-glow {
+            0% { opacity: 0.8; stroke-width: 12px; }
+            50% { opacity: 1; stroke-width: 14px; }
+            100% { opacity: 0.8; stroke-width: 12px; }
+        }
+        .progress-ring-active {
+            animation: subtle-glow 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen w-full justify-between p-container-margin">
+<!-- Atmospheric Background Shader -->
+
+<!-- Top Section: Title & Progress -->
+<div class="relative z-10 flex flex-col items-center mt-xl text-center">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-sm">Current Effort</span>
+<h1 class="font-display-lg text-display-lg text-on-surface uppercase mb-xl">GREAT WORK</h1>
+<!-- Large Minimalist Progress Visual -->
+<div class="relative w-64 h-64 flex items-center justify-center">
+<!-- Background Track -->
+<svg class="absolute inset-0 w-full h-full -rotate-90">
+<circle cx="128" cy="128" fill="transparent" r="110" stroke="#2C2C2C" stroke-width="12"></circle>
+<!-- Progress (14/15 reps = ~93.3%) -->
+<circle class="progress-ring-active" cx="128" cy="128" fill="transparent" r="110" stroke="#4b8eff" stroke-dasharray="691" stroke-dashoffset="46" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="flex flex-col items-center">
+<span class="font-stat-xl text-stat-xl text-on-surface">14</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest -mt-2">REPS</span>
+</div>
+</div>
+</div>
+<!-- Middle Section: Nudge & Focus -->
+<div class="relative z-10 flex flex-col items-center px-lg text-center">
+<div class="bg-surface-container-low border border-outline-variant p-lg rounded-xl max-w-sm">
+<span class="material-symbols-outlined text-electric-blue mb-sm" style="font-size: 32px;">bolt</span>
+<p class="font-body-lg text-body-lg text-on-surface mb-xs italic">"You're crushing it."</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Aim for at least one more rep on your next set to keep the momentum.</p>
+</div>
+</div>
+<!-- Bottom Actions: Minimal & Industrial -->
+<div class="relative z-10 flex flex-col gap-md w-full mb-xl">
+<!-- Primary Action -->
+<button class="w-full h-touch-target min-h-[56px] bg-electric-blue text-on-primary-fixed font-label-md text-label-md uppercase tracking-widest rounded-lg flex items-center justify-center active:scale-[0.98] transition-transform duration-100">
+            STAY AT CURRENT WEIGHT
+        </button>
+<!-- Secondary Action -->
+<button class="w-full h-touch-target min-h-[56px] bg-transparent border border-outline-variant text-on-surface-variant font-label-md text-label-md uppercase tracking-widest rounded-lg flex items-center justify-center active:bg-surface-variant transition-colors duration-200">
+            ADJUST WEIGHT
+        </button>
+</div>
+<!-- Micro-interaction script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Simple haptic feedback simulation
+                    if (window.navigator.vibrate) {
+                        window.navigator.vibrate(10);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

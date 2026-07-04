@@ -1,0 +1,137 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+    }
+    body {
+      background-color: #131313;
+      color: #e5e2e1;
+      font-family: 'Inter', sans-serif;
+    }
+    .surface-card {
+      background-color: #1E1E1E;
+      border: 1px solid #3F3F46;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "tertiary": "#eec200",
+                  "surface-container": "#201f1f",
+                  "outline": "#8b90a0",
+                  "tertiary-fixed-dim": "#eec200",
+                  "surface": "#131313",
+                  "background": "#131313",
+                  "surface-variant": "#353534",
+                  "error-container": "#93000a",
+                  "surface-dim": "#131313",
+                  "on-error-container": "#ffdad6",
+                  "surface-bright": "#393939",
+                  "on-surface": "#e5e2e1",
+                  "on-secondary-container": "#004119",
+                  "secondary": "#4ae176",
+                  "on-error": "#690005",
+                  "inverse-primary": "#005bc1",
+                  "tertiary-fixed": "#ffe083",
+                  "on-primary-fixed-variant": "#004493",
+                  "outline-variant": "#414755",
+                  "on-tertiary-fixed-variant": "#574500",
+                  "tertiary-container": "#cea700",
+                  "on-tertiary": "#3c2f00",
+                  "on-primary-container": "#00285c",
+                  "on-primary": "#002e69",
+                  "error": "#ffb4ab",
+                  "surface-container-high": "#2a2a2a",
+                  "surface-container-low": "#1c1b1b",
+                  "on-surface-variant": "#c1c6d7",
+                  "primary-fixed-dim": "#adc6ff",
+                  "primary-container": "#4b8eff",
+                  "secondary-fixed-dim": "#4ae176",
+                  "inverse-surface": "#e5e2e1",
+                  "surface-tint": "#adc6ff",
+                  "on-secondary": "#003915",
+                  "on-tertiary-container": "#4e3e00",
+                  "inverse-on-surface": "#313030",
+                  "primary": "#adc6ff",
+                  "secondary-fixed": "#6bff8f",
+                  "surface-container-lowest": "#0e0e0e",
+                  "on-secondary-fixed-variant": "#005321",
+                  "primary-fixed": "#d8e2ff",
+                  "on-primary-fixed": "#001a41",
+                  "on-tertiary-fixed": "#231b00",
+                  "on-secondary-fixed": "#002109",
+                  "on-background": "#e5e2e1",
+                  "surface-container-highest": "#353534",
+                  "secondary-container": "#00b954"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "container-margin": "20px",
+                  "unit": "4px",
+                  "lg": "24px",
+                  "xs": "4px",
+                  "gutter": "16px",
+                  "md": "16px",
+                  "touch-target": "48px",
+                  "xl": "40px",
+                  "sm": "8px"
+          },
+          "fontFamily": {
+                  "display-lg": ["Inter"],
+                  "stat-xl": ["Inter"],
+                  "label-md": ["Inter"],
+                  "title-md": ["Inter"],
+                  "body-md": ["Inter"],
+                  "headline-lg": ["Inter"],
+                  "body-lg": ["Inter"],
+                  "headline-lg-mobile": ["Inter"]
+          },
+          "fontSize": {
+                  "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                  "stat-xl": ["40px", {"lineHeight": "40px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                  "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                  "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                  "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                  "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                  "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                  "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopAppBar -->
+<main class="px-container-margin py-md space-y-md">
+<!-- Minimal Workout List -->
+<div class="space-y-sm"><div class="text-xs text-on-surface-variant opacity-70 uppercase tracking-widest mb-2">Isolated Set Protocol</div><div class="text-xs text-on-surface-variant opacity-70 uppercase tracking-widest mb-2">A SIMPLE SYSTEM FOR PROGRESSIVE OVERLOAD</div><div class="flex items-center justify-between py-4 border-b border-outline-variant"><div class="flex flex-col"><h2 class="font-title-md text-on-surface">Barbell Squat</h2></div><div class="flex flex-col items-center"><span class="font-title-md text-primary border-b border-primary px-2">225</span><span class="font-body-md text-on-surface-variant text-sm">12</span></div></div><div class="flex items-center justify-between py-4 border-b border-outline-variant opacity-70"><div class="flex flex-col"><h2 class="font-title-md text-on-surface">Leg Press</h2></div><div class="flex flex-col items-center"><span class="font-title-md text-on-surface-variant border-b border-outline-variant px-2">360</span><span class="font-body-md text-on-surface-variant text-sm">12</span></div></div><div class="flex items-center justify-between py-4 border-b border-outline-variant opacity-70"><div class="flex flex-col"><h2 class="font-title-md text-on-surface">Leg Extensions</h2></div><div class="flex flex-col items-center"><span class="font-title-md text-on-surface-variant border-b border-outline-variant px-2">150</span><span class="font-body-md text-on-surface-variant text-sm">15</span></div></div><div class="flex items-center justify-between py-4 border-b border-outline-variant opacity-70"><div class="flex flex-col"><h2 class="font-title-md text-on-surface">Hamstring Curls</h2><span class="text-xs text-on-surface-variant uppercase tracking-widest">3 Sets</span></div><div class="flex flex-col items-center"><span class="font-title-md text-on-surface-variant border-b border-outline-variant px-2">120</span><span class="font-body-md text-on-surface-variant text-sm">12</span></div></div></div>
+<!-- Controls -->
+<!-- Rest Timer Overlay -->
+<button class="w-full py-4 mt-8 border-2 border-dashed border-outline-variant rounded-lg text-on-surface-variant font-title-md uppercase tracking-widest hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-2"><span class="material-symbols-outlined">add</span>ADD EXERCISE</button></main>
+<!-- BottomNavBar -->
+<!-- Floating Action Button -->
+
+
+
+
+
+
+</body></html>

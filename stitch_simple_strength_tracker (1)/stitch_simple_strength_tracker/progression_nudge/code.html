@@ -1,0 +1,243 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>TRAIN - Log Set</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffe083",
+                        "on-error-container": "#ffdad6",
+                        "primary": "#adc6ff",
+                        "outline-variant": "#414755",
+                        "surface-variant": "#353534",
+                        "on-tertiary-fixed": "#231b00",
+                        "on-background": "#e5e2e1",
+                        "on-secondary-fixed-variant": "#005321",
+                        "tertiary": "#eec200",
+                        "error-container": "#93000a",
+                        "surface-bright": "#393939",
+                        "on-tertiary": "#3c2f00",
+                        "on-primary-fixed-variant": "#004493",
+                        "outline": "#8b90a0",
+                        "inverse-surface": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed": "#002109",
+                        "tertiary-container": "#cea700",
+                        "background": "#121212",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-error": "#690005",
+                        "on-tertiary-container": "#4e3e00",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-highest": "#353534",
+                        "surface": "#121212",
+                        "on-surface-variant": "#c1c6d7",
+                        "surface-tint": "#adc6ff",
+                        "primary-fixed": "#d8e2ff",
+                        "surface-dim": "#131313",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-container": "#4ae176",
+                        "on-surface": "#e5e2e1",
+                        "secondary-fixed": "#6bff8f",
+                        "on-primary": "#002e69",
+                        "on-tertiary-fixed-variant": "#574500",
+                        "on-secondary-container": "#004119",
+                        "inverse-on-surface": "#313030",
+                        "inverse-primary": "#005bc1",
+                        "secondary-fixed-dim": "#4ae176",
+                        "secondary": "#4ae176",
+                        "primary-container": "#4b8eff",
+                        "on-primary-container": "#00285c",
+                        "surface-container": "#1E1E1E",
+                        "on-primary-fixed": "#001a41",
+                        "tertiary-fixed-dim": "#eec200",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary": "#003915"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "20px",
+                        "touch-target": "48px",
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "xl": "40px",
+                        "xs": "4px",
+                        "unit": "4px",
+                        "lg": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "stat-xl": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "stat-xl": ["40px", {"lineHeight": "40px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #121212;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        .stepper-btn:active {
+            transform: scale(0.9);
+            background-color: #2C2C2C;
+        }
+        .log-btn-active:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .kinetic-border {
+            border: 1px solid #3F3F46;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-hidden selection:bg-secondary selection:text-on-secondary-container">
+<!-- Header & Title Area -->
+<header class="pt-12 px-container-margin animate-fade-in-down">
+<div class="flex justify-between items-center mb-sm">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Set 1 of 3</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-xs uppercase tracking-tight">Barbell Squat</h1>
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-secondary text-[18px]">target</span>
+<span class="font-label-md text-label-md text-secondary uppercase">Goal: 10-15 Reps</span>
+</div>
+</header>
+<!-- Main Input Grid -->
+<main class="flex-grow flex flex-col justify-center px-container-margin gap-xl"><div class="hidden animate-fade-in-down bg-secondary-container/10 border border-secondary/30 rounded-xl p-4 flex items-start gap-3 mb-2" id="progression-nudge"><span class="material-symbols-outlined text-secondary">trending_up</span><div class="flex flex-col"><span class="font-label-md text-secondary uppercase tracking-wider">Goal reached!</span><p class="text-on-surface-variant text-[14px] leading-tight">Increase weight by 2.5 - 5 lbs if joints feel okay. Aim for muscle burn, not joint crunchiness.</p></div></div>
+<!-- Weight Input Section -->
+<section class="space-y-md">
+<label class="font-label-md text-label-md text-on-surface-variant uppercase ml-1">Weight (LBS)</label>
+<div class="flex items-center justify-between gap-gutter">
+<button class="stepper-btn w-touch-target h-touch-target md:w-16 md:h-16 flex items-center justify-center kinetic-border rounded-xl bg-surface-container text-on-surface transition-all" onclick="decrement('weight')">
+<span class="material-symbols-outlined text-[32px]">remove</span>
+</button>
+<div class="flex-grow kinetic-border rounded-xl bg-surface-container focus-within:border-secondary transition-colors h-24 md:h-32 flex items-center justify-center">
+<input class="bg-transparent border-none focus:ring-0 text-center font-display-lg text-display-lg w-full text-on-surface" id="weight-input" type="number" value="135">
+</div>
+<button class="stepper-btn w-touch-target h-touch-target md:w-16 md:h-16 flex items-center justify-center kinetic-border rounded-xl bg-surface-container text-on-surface transition-all" onclick="increment('weight')">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+</div>
+</section>
+<!-- Reps Input Section -->
+<section class="space-y-md">
+<label class="font-label-md text-label-md text-on-surface-variant uppercase ml-1">Reps</label>
+<div class="flex items-center justify-between gap-gutter">
+<button class="stepper-btn w-touch-target h-touch-target md:w-16 md:h-16 flex items-center justify-center kinetic-border rounded-xl bg-surface-container text-on-surface transition-all" onclick="decrement('reps')">
+<span class="material-symbols-outlined text-[32px]">remove</span>
+</button>
+<div class="flex-grow kinetic-border rounded-xl bg-surface-container focus-within:border-secondary transition-colors h-24 md:h-32 flex items-center justify-center">
+<input class="bg-transparent border-none focus:ring-0 text-center font-display-lg text-display-lg w-full text-on-surface" id="reps-input" type="number" value="12">
+</div>
+<button class="stepper-btn w-touch-target h-touch-target md:w-16 md:h-16 flex items-center justify-center kinetic-border rounded-xl bg-surface-container text-on-surface transition-all" onclick="increment('reps')">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Footer Action -->
+<footer class="p-container-margin pb-12">
+<button class="log-btn-active w-full h-[64px] bg-secondary text-on-secondary-container font-label-md text-label-md uppercase tracking-widest rounded-xl shadow-[0_8px_32px_rgba(74,225,118,0.2)] flex items-center justify-center gap-2 transition-all group overflow-hidden relative">
+<span class="relative z-10">Log Set</span>
+<span class="material-symbols-outlined relative z-10 group-hover:translate-x-1 transition-transform">chevron_right</span>
+<!-- Subtle light effect -->
+<div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</button>
+</footer>
+<script>
+        function increment(type) {
+            const input = document.getElementById(type + '-input');
+            const step = type === 'weight' ? 5 : 1;
+            input.value = parseInt(input.value) + step;
+            triggerHaptic();
+        }
+
+        function decrement(type) {
+            const input = document.getElementById(type + '-input');
+            const step = type === 'weight' ? 5 : 1;
+            const newVal = parseInt(input.value) - step;
+            if (newVal >= 0) {
+                input.value = newVal;
+                triggerHaptic();
+            }
+        }
+
+        function triggerHaptic() {
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(5);
+            }
+        }
+
+        // Add visual flair to the background
+        const body = document.body;
+        body.addEventListener('touchstart', (e) => {
+            const circle = document.createElement('div');
+            circle.className = 'absolute pointer-events-none w-1 h-1 bg-secondary rounded-full opacity-20 transform -translate-x-1/2 -translate-y-1/2 animate-ping';
+            circle.style.left = e.touches[0].clientX + 'px';
+            circle.style.top = e.touches[0].clientY + 'px';
+            body.appendChild(circle);
+            setTimeout(() => circle.remove(), 600);
+        });
+    </script>
+<style>
+        @keyframes fade-in-down {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-down {
+            animation: fade-in-down 0.6s ease-out forwards;
+        }
+    </style>
+<script>const repsInput = document.getElementById('reps-input'); const nudge = document.getElementById('progression-nudge'); function checkNudge() { if (parseInt(repsInput.value) >= 15) { nudge.classList.remove('hidden'); } else { nudge.classList.add('hidden'); } } repsInput.addEventListener('input', checkNudge); const originalIncrement = increment; increment = function(type) { originalIncrement(type); if (type === 'reps') checkNudge(); }; const originalDecrement = decrement; decrement = function(type) { originalDecrement(type); if (type === 'reps') checkNudge(); }; checkNudge();</script>
+
+</body></html>
