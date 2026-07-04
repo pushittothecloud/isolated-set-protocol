@@ -2,6 +2,7 @@ const STORAGE_KEY = "repriser_state_v3";
 
 const appScreen = document.getElementById("appScreen");
 const resetAllBtn = document.getElementById("resetAllBtn");
+let deferredInstallPrompt = null;
 
 const state = loadState();
 
@@ -22,6 +23,7 @@ function defaultState() {
     lastFeedback: null,
     workoutReadyForNext: false,
     pendingRemoveExerciseIndex: null,
+    installHelpOpen: false,
   };
 }
 
@@ -38,6 +40,7 @@ function loadState() {
       activeSetIndex: 0,
       lastFeedback: null,
       pendingRemoveExerciseIndex: null,
+      installHelpOpen: false,
     };
   } catch {
     return defaultState();
@@ -106,6 +109,51 @@ function renderRemoveExerciseModal() {
       </div>
     </div>
   `;
+}
+
+function isInstalledStandalone() {
+  const iosStandalone = window.navigator.standalone === true;
+  const displayModeStandalone = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches;
+  return iosStandalone || displayModeStandalone;
+}
+
+function renderInstallHelpModal() {
+  if (!state.installHelpOpen) return "";
+
+  return `
+    <div class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Add to Home Screen help">
+      <div class="modal-card">
+        <p class="line-title" style="margin-bottom:6px;">Add to Home Screen</p>
+        <p class="sub" style="margin:0 0 8px;">If the install prompt is unavailable, use your browser menu and select Add to Home Screen.</p>
+        <div class="modal-actions">
+          <button data-act="close-install-help" class="btn btn-secondary" type="button">Got it</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function launchAddToHomeScreen() {
+  if (isInstalledStandalone()) {
+    state.installHelpOpen = false;
+    render();
+    return;
+  }
+
+  if (!deferredInstallPrompt) {
+    state.installHelpOpen = true;
+    render();
+    return;
+  }
+
+  const promptEvent = deferredInstallPrompt;
+  deferredInstallPrompt = null;
+
+  promptEvent.prompt();
+  promptEvent.userChoice.finally(() => {
+    state.installHelpOpen = false;
+    render();
+  });
 }
 
 function render() {
@@ -440,7 +488,9 @@ function renderComplete() {
         <div class="suggestion-item">😴 Get quality sleep tonight.</div>
       </div>
     </div>
+    <button data-act="add-to-home-screen" class="btn btn-outline" type="button">Add to Home Screen</button>
     <button data-act="finish-workout" class="btn btn-primary" type="button">Back to main screen</button>
+    ${renderInstallHelpModal()}
   `;
 }
 
@@ -665,6 +715,16 @@ function handleAction(action, exerciseIndex = null, tierIndex = null) {
     state.activeSetIndex = 0;
     state.lastFeedback = null;
     state.workoutReadyForNext = true;
+    state.installHelpOpen = false;
+  }
+
+  if (action === "add-to-home-screen") {
+    launchAddToHomeScreen();
+    return;
+  }
+
+  if (action === "close-install-help") {
+    state.installHelpOpen = false;
   }
 
   if (action === "open-feedback-form") {
@@ -798,5 +858,17 @@ if (resetAllBtn) {
     render();
   });
 }
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  render();
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  state.installHelpOpen = false;
+  render();
+});
 
 render();
