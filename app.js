@@ -21,6 +21,7 @@ function defaultState() {
     history: [],
     lastFeedback: null,
     workoutReadyForNext: false,
+    pendingRemoveExerciseIndex: null,
   };
 }
 
@@ -36,6 +37,7 @@ function loadState() {
       activeExerciseIndex: 0,
       activeSetIndex: 0,
       lastFeedback: null,
+      pendingRemoveExerciseIndex: null,
     };
   } catch {
     return defaultState();
@@ -57,6 +59,53 @@ function esc(value) {
 
 function activeExercise() {
   return state.exercises[state.activeExerciseIndex] || null;
+}
+
+function removeExerciseAt(exerciseIndex) {
+  const picked = state.exercises[exerciseIndex];
+  if (!picked) return;
+
+  state.exercises.splice(exerciseIndex, 1);
+  state.history = state.history.filter((entry) => entry.exercise !== picked.name);
+
+  if (state.activeExerciseIndex > exerciseIndex) {
+    state.activeExerciseIndex -= 1;
+  } else if (state.activeExerciseIndex === exerciseIndex) {
+    state.activeExerciseIndex = Math.max(0, state.activeExerciseIndex - 1);
+    state.activeSetIndex = 0;
+    state.lastFeedback = null;
+  }
+
+  if (state.exercises.length === 0) {
+    state.activeExerciseIndex = 0;
+    state.activeSetIndex = 0;
+    state.lastFeedback = null;
+    state.sessionStartedAt = null;
+  }
+
+  state.pendingRemoveExerciseIndex = null;
+  state.view = "main";
+}
+
+function renderRemoveExerciseModal() {
+  if (!Number.isInteger(state.pendingRemoveExerciseIndex)) return "";
+
+  const picked = state.exercises[state.pendingRemoveExerciseIndex];
+  if (!picked) return "";
+
+  return `
+    <div class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Remove exercise confirmation">
+      <div class="modal-card">
+        <p class="line-title" style="margin-bottom:6px;">Remove exercise</p>
+        <h3 style="margin:0 0 8px;">${esc(picked.name)}</h3>
+        <p class="sub" style="margin:0 0 8px;">This will clear its logged sets in this workout.</p>
+        <div class="modal-actions">
+          <button data-act="cancel-remove-exercise" class="btn btn-outline" type="button">Cancel</button>
+          <button data-act="confirm-remove-exercise" class="btn btn-danger" type="button">Remove</button>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function render() {
@@ -96,7 +145,7 @@ function renderMain() {
                 >${canLog ? "Log set" : "Done"}</button>
                 <button
                   class="remove-btn"
-                  data-act="remove-exercise"
+                  data-act="ask-remove-exercise"
                   data-exercise-index="${idx}"
                   type="button"
                   aria-label="Remove ${esc(exercise.name)}"
@@ -126,6 +175,7 @@ function renderMain() {
       <button data-act="go-add" class="btn btn-outline" type="button">+ Add exercise</button>
       <button data-act="${state.workoutReadyForNext ? "start-next-workout" : "start-workout"}" class="btn btn-primary" type="button" ${state.exercises.length ? "" : "disabled"}>${state.workoutReadyForNext ? "Next workout" : "Start workout"}</button>
     </div>
+    ${renderRemoveExerciseModal()}
   `;
 }
 
@@ -464,32 +514,20 @@ function handleAction(action, exerciseIndex = null, tierIndex = null) {
     }
   }
 
-  if (action === "remove-exercise" && Number.isInteger(exerciseIndex)) {
-    const picked = state.exercises[exerciseIndex];
-    if (picked) {
-      const confirmed = window.confirm(`Remove ${picked.name}?`);
-      if (confirmed) {
-        state.exercises.splice(exerciseIndex, 1);
-        state.history = state.history.filter((entry) => entry.exercise !== picked.name);
-
-        if (state.activeExerciseIndex > exerciseIndex) {
-          state.activeExerciseIndex -= 1;
-        } else if (state.activeExerciseIndex === exerciseIndex) {
-          state.activeExerciseIndex = Math.max(0, state.activeExerciseIndex - 1);
-          state.activeSetIndex = 0;
-          state.lastFeedback = null;
-        }
-
-        if (state.exercises.length === 0) {
-          state.activeExerciseIndex = 0;
-          state.activeSetIndex = 0;
-          state.lastFeedback = null;
-          state.sessionStartedAt = null;
-        }
-
-        state.view = "main";
-      }
+  if (action === "ask-remove-exercise" && Number.isInteger(exerciseIndex)) {
+    if (state.exercises[exerciseIndex]) {
+      state.pendingRemoveExerciseIndex = exerciseIndex;
+      state.view = "main";
     }
+  }
+
+  if (action === "cancel-remove-exercise") {
+    state.pendingRemoveExerciseIndex = null;
+    state.view = "main";
+  }
+
+  if (action === "confirm-remove-exercise" && Number.isInteger(state.pendingRemoveExerciseIndex)) {
+    removeExerciseAt(state.pendingRemoveExerciseIndex);
   }
 
   if (action === "draft-weight-up") state.draftWeight += 5;
@@ -534,6 +572,7 @@ function handleAction(action, exerciseIndex = null, tierIndex = null) {
     state.currentReps = state.nextDefaultReps;
     state.lastFeedback = null;
     state.workoutReadyForNext = false;
+    state.pendingRemoveExerciseIndex = null;
     state.view = "warmup";
   }
 
@@ -554,6 +593,7 @@ function handleAction(action, exerciseIndex = null, tierIndex = null) {
     state.currentReps = state.nextDefaultReps;
     state.lastFeedback = null;
     state.workoutReadyForNext = false;
+    state.pendingRemoveExerciseIndex = null;
     state.view = "warmup";
   }
 

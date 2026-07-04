@@ -324,6 +324,11 @@ body {
   color: #302604;
 }
 
+.btn-danger {
+  background: #ff6f8d;
+  color: #2b0813;
+}
+
 .btn-outline {
   background: transparent;
   color: #d6dde9;
@@ -598,6 +603,36 @@ body {
 
 .remove-btn:hover {
   background: #2c171d;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 4, 8, 0.74);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 30;
+}
+
+.modal-card {
+  width: min(320px, calc(100vw - 28px));
+  border-radius: 14px;
+  border: 1px solid #2c3240;
+  background: linear-gradient(165deg, #181d26 0%, #12161d 100%);
+  padding: 14px;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.45);
+}
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.modal-actions .btn {
+  margin-top: 0;
 }
 
 .btn:disabled {
