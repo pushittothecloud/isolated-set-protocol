@@ -165,7 +165,7 @@ function renderMain() {
           alt="Isolated Set Protocol logo"
           onerror="this.style.display='none'; this.parentElement.classList.add('is-fallback');"
         />
-        <div class="logo-fallback" aria-label="Isolated Set Protocol mark">🏋</div>
+        <div class="icon-circle logo-fallback" aria-label="Isolated Set Protocol mark">🏋</div>
       </div>
       <h2 class="hero hero-white" style="font-size:2.9rem;">ISP</h2>
       <p class="badge">Isolated Set Protocol</p>
