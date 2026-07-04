@@ -477,7 +477,7 @@ function renderComplete() {
     <div class="card">
       <small class="small">Most improved</small>
       <h3 style="margin-top:3px;">${esc(best.name)}</h3>
-      <strong style="color:#45df7d;font-size:2rem;">+${best.diff} lbs</strong>
+      <strong style="color:#45df7d;font-size:2rem;">+${best.amount} ${best.unit}</strong>
     </div>
     <div class="card">
       <p class="line-title">Recovery suggestions</p>
@@ -834,22 +834,31 @@ function applyFeedbackAdjustment() {
 
 function findMostImproved() {
   if (state.exercises.length === 0) {
-    return { name: "N/A", diff: 0 };
+    return { name: "N/A", amount: 0, unit: "reps" };
   }
 
   let winner = state.exercises[0].name;
-  let bestDiff = 0;
+  let bestAmount = 0;
+  let bestUnit = "reps";
 
   for (const exercise of state.exercises) {
     if (exercise.sets.length < 2) continue;
-    const diff = exercise.sets[exercise.sets.length - 1].weight - exercise.sets[0].weight;
-    if (diff > bestDiff) {
-      bestDiff = diff;
+    const firstSet = exercise.sets[0];
+    const lastSet = exercise.sets[exercise.sets.length - 1];
+    const repGain = Math.max(0, lastSet.reps - firstSet.reps);
+    const weightGain = Math.max(0, lastSet.weight - firstSet.weight);
+
+    const candidateAmount = weightGain >= repGain ? weightGain : repGain;
+    const candidateUnit = weightGain >= repGain ? "lbs" : "reps";
+
+    if (candidateAmount > bestAmount) {
+      bestAmount = candidateAmount;
+      bestUnit = candidateUnit;
       winner = exercise.name;
     }
   }
 
-  return { name: winner, diff: Math.max(1, bestDiff) };
+  return { name: winner, amount: bestAmount, unit: bestUnit };
 }
 
 if (resetAllBtn) {
