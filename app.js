@@ -847,9 +847,8 @@ function findMostImproved() {
     const lastSet = exercise.sets[exercise.sets.length - 1];
     const repGain = Math.max(0, lastSet.reps - firstSet.reps);
     const weightGain = Math.max(0, lastSet.weight - firstSet.weight);
-
-    const candidateAmount = weightGain >= repGain ? weightGain : repGain;
-    const candidateUnit = weightGain >= repGain ? "lbs" : "reps";
+    const candidateUnit = repGain > 0 ? "reps" : weightGain > 0 ? "lbs" : "reps";
+    const candidateAmount = repGain > 0 ? repGain : weightGain;
 
     if (candidateAmount > bestAmount) {
       bestAmount = candidateAmount;
