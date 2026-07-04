@@ -1,16 +1,16 @@
 :root {
   --bg-0: #d9d3cb;
   --bg-1: #cfc8be;
-  --phone-bg: #0b0c0f;
+  --phone-bg: #060b0d;
   --phone-w: 390px;
   --phone-h: 844px;
   --panel: #191b21;
   --panel-soft: #13151a;
   --text: #f2f2f2;
-  --muted: #a4a9b3;
-  --line: #2b2f38;
-  --green: #45df7d;
-  --blue: #4f8dff;
+  --muted: #9cb5b8;
+  --line: #244349;
+  --green: #44edf2;
+  --blue: #33c7dc;
   --gold: #f2cb05;
   --danger: #ffcc00;
 }
@@ -28,7 +28,7 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: "Space Grotesk", sans-serif;
-  background: #08090c;
+  background: #05090b;
 }
 
 .phone-wrap {
@@ -55,8 +55,8 @@ body {
   height: 100%;
   min-height: 0;
   border-radius: 17px;
-  background: radial-gradient(circle at 28% 0%, #0f2019 0%, transparent 40%),
-    radial-gradient(circle at 70% 20%, #121a29 0%, transparent 45%), var(--phone-bg);
+  background: radial-gradient(circle at 28% 0%, rgba(60, 238, 242, 0.16) 0%, transparent 45%),
+    radial-gradient(circle at 74% 22%, rgba(45, 170, 188, 0.18) 0%, transparent 48%), var(--phone-bg);
   color: var(--text);
   border: 1px solid #0f1117;
   padding: 14px;
@@ -70,7 +70,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #9cb4ff;
+  color: #92edf4;
   font-size: 1.1rem;
   margin-bottom: 12px;
 }
@@ -89,7 +89,7 @@ body {
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: #9fb2e8;
+  color: #8ad9de;
   font-size: 0.7rem;
 }
 
@@ -124,12 +124,37 @@ body {
   height: 98px;
   margin: 10px auto 14px;
   border-radius: 50%;
-  border: 1px solid #354364;
+  border: 1px solid #2e747d;
   display: grid;
   place-items: center;
   font-size: 2rem;
-  color: #a0b5ff;
-  background: linear-gradient(160deg, rgba(30, 35, 44, 0.88), rgba(24, 26, 32, 0.88));
+  color: #8deef4;
+  background: linear-gradient(160deg, rgba(11, 23, 27, 0.92), rgba(10, 18, 21, 0.92));
+}
+
+.logo-wrap {
+  width: 108px;
+  height: 108px;
+  margin: 10px auto 14px;
+  display: grid;
+  place-items: center;
+}
+
+.hero-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 44%;
+  border-radius: 18px;
+  filter: drop-shadow(0 0 14px rgba(68, 237, 242, 0.42));
+}
+
+.logo-wrap .logo-fallback {
+  display: none;
+}
+
+.logo-wrap.is-fallback .logo-fallback {
+  display: grid;
 }
 
 .card {
@@ -199,7 +224,7 @@ body {
 }
 
 .metric-input:focus {
-  border-color: #4f8dff;
+  border-color: var(--blue);
 }
 
 .metric-input::-webkit-outer-spin-button,
@@ -225,22 +250,22 @@ body {
   text-transform: uppercase;
   font-size: 0.7rem;
   letter-spacing: 0.16em;
-  color: #9fb1de;
+  color: #8acbd1;
   margin: 2px 0 8px;
 }
 
 .goal-banner {
   margin: 8px 0 12px;
   border-radius: 12px;
-  border: 1px solid rgba(79, 141, 255, 0.55);
-  background: linear-gradient(155deg, rgba(79, 141, 255, 0.2), rgba(20, 28, 44, 0.95));
-  box-shadow: 0 0 20px rgba(79, 141, 255, 0.2);
+  border: 1px solid rgba(68, 237, 242, 0.55);
+  background: linear-gradient(155deg, rgba(68, 237, 242, 0.2), rgba(11, 24, 30, 0.95));
+  box-shadow: 0 0 20px rgba(68, 237, 242, 0.2);
   padding: 10px 12px;
 }
 
 .goal-label {
   margin: 0;
-  color: #b7cbff;
+  color: #a7f0f3;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   font-size: 0.68rem;
@@ -297,8 +322,8 @@ body {
   height: 210px;
   margin: 10px auto 14px;
   border-radius: 50%;
-  border: 12px solid #3c78e6;
-  border-top-color: #263759;
+  border: 12px solid #30c3d7;
+  border-top-color: #1e4247;
   display: grid;
   place-items: center;
 }
@@ -314,7 +339,7 @@ body {
   font-size: 0.86rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #a2b5df;
+  color: #8dcbd1;
 }
 
 .stats {
@@ -473,8 +498,8 @@ body {
 }
 
 .text-input:focus {
-  outline: 1px solid #4f8dff;
-  border-color: #4f8dff;
+  outline: 1px solid var(--blue);
+  border-color: var(--blue);
 }
 
 .input-row {
@@ -509,20 +534,20 @@ body {
 }
 
 .exercise-item.is-active {
-  border-color: #4f8dff;
-  box-shadow: inset 0 0 0 1px rgba(79, 141, 255, 0.4);
+  border-color: var(--blue);
+  box-shadow: inset 0 0 0 1px rgba(51, 199, 220, 0.4);
 }
 
 .exercise-meta {
-  color: #93b4ff;
+  color: #89dee4;
   font-family: "Barlow Semi Condensed", sans-serif;
   font-size: 1.05rem;
 }
 
 .mini-btn {
-  border: 1px solid #355ea5;
-  background: #4f8dff;
-  color: #04152f;
+  border: 1px solid #2f7f8d;
+  background: var(--blue);
+  color: #041a1f;
   border-radius: 999px;
   padding: 7px 12px;
   font-family: "Barlow Semi Condensed", sans-serif;

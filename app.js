@@ -109,7 +109,15 @@ function renderMain() {
 
   appScreen.innerHTML = `
     <div class="center">
-      <div class="icon-circle">🏋</div>
+      <div class="logo-wrap">
+        <img
+          class="hero-logo"
+          src="isp-arrow.png"
+          alt="Isolated Set Protocol logo"
+          onerror="this.style.display='none'; this.parentElement.classList.add('is-fallback');"
+        />
+        <div class="icon-circle logo-fallback">🏋</div>
+      </div>
       <h2 class="hero hero-white" style="font-size:2.9rem;">ISP</h2>
       <p class="badge">Isolated Set Protocol</p>
     </div>
