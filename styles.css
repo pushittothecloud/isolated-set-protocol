@@ -655,6 +655,60 @@ body {
   background: #233149;
 }
 
+.rest-panel {
+  margin: 10px 0 8px;
+  border: 1px solid #2f3646;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #151a23 0%, #10141b 100%);
+  padding: 10px;
+}
+
+.rest-timer-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.rest-time {
+  margin: 0;
+  font-family: "Barlow Semi Condensed", sans-serif;
+  font-size: 1.45rem;
+  letter-spacing: 0.03em;
+  color: #c8d7fb;
+  opacity: 0.92;
+}
+
+.breath-wrap {
+  margin-top: 0;
+  min-height: 182px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid #2a3243;
+  background: radial-gradient(circle at 50% 35%, rgba(79, 141, 255, 0.16), rgba(11, 15, 23, 0.92));
+}
+
+.breath-orb {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #d6e7ff 0%, #74a4ff 42%, #2f57a7 100%);
+  transform: scale(0.78);
+  box-shadow: 0 0 0 0 rgba(79, 141, 255, 0.2);
+  filter: saturate(95%);
+  transition-property: transform, box-shadow, filter;
+  transition-duration: var(--breath-phase-ms, 2000ms);
+  transition-timing-function: cubic-bezier(0.33, 0, 0.2, 1);
+}
+
+.breath-orb.is-expanded {
+  transform: scale(1.62);
+  box-shadow: 0 0 0 28px rgba(79, 141, 255, 0.08);
+  filter: saturate(112%);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

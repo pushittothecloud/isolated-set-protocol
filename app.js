@@ -1,8 +1,13 @@
 const STORAGE_KEY = "repriser_state_v3";
+const DEFAULT_REST_COUNTDOWN_MS = 2 * 60 * 1000;
 
 const appScreen = document.getElementById("appScreen");
 const resetAllBtn = document.getElementById("resetAllBtn");
 let deferredInstallPrompt = null;
+let restTimerIntervalId = null;
+let breathPhaseTimeoutId = null;
+let breathInhalePhase = true;
+let breathCycleCount = 0;
 
 const state = loadState();
 
@@ -24,6 +29,8 @@ function defaultState() {
     workoutReadyForNext: false,
     pendingRemoveExerciseIndex: null,
     installHelpOpen: false,
+    restTimerEndsAt: null,
+    restTimerDurationMs: DEFAULT_REST_COUNTDOWN_MS,
   };
 }
 
@@ -58,6 +65,171 @@ function esc(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function clampWeight(value) {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.floor(value * 100) / 100);
+}
+
+function formatWeight(value) {
+  return String(clampWeight(value));
+}
+
+function getRestRemainingMs() {
+  if (typeof state.restTimerEndsAt !== "number") return 0;
+  return Math.max(0, state.restTimerEndsAt - Date.now());
+}
+
+function formatCountdown(ms) {
+  const wholeSeconds = Math.ceil(Math.max(0, ms) / 1000);
+  const mins = Math.floor(wholeSeconds / 60);
+  const secs = wholeSeconds % 60;
+  return `${mins}:${String(secs).padStart(2, "0")}`;
+}
+
+function clearRestTimerInterval() {
+  if (restTimerIntervalId) {
+    clearInterval(restTimerIntervalId);
+    restTimerIntervalId = null;
+  }
+}
+
+function clearBreathPhaseTimeout() {
+  if (breathPhaseTimeoutId) {
+    clearTimeout(breathPhaseTimeoutId);
+    breathPhaseTimeoutId = null;
+  }
+}
+
+function getBreathPhaseDurationsMs() {
+  const inhaleMs = 2000;
+  const exhaleMs = Math.min(3800, 2000 + breathCycleCount * 120);
+  return { inhaleMs, exhaleMs };
+}
+
+function scheduleBreathPhase() {
+  const orb = appScreen?.querySelector(".breath-orb");
+  if (!orb || state.view !== "feedback") {
+    clearBreathPhaseTimeout();
+    return;
+  }
+
+  const { inhaleMs, exhaleMs } = getBreathPhaseDurationsMs();
+  const isInhalePhase = breathInhalePhase;
+  const phaseMs = isInhalePhase ? inhaleMs : exhaleMs;
+  orb.style.setProperty("--breath-phase-ms", `${Math.round(phaseMs)}ms`);
+
+  if (isInhalePhase) {
+    orb.classList.add("is-expanded");
+  } else {
+    orb.classList.remove("is-expanded");
+    breathCycleCount += 1;
+  }
+
+  breathInhalePhase = !breathInhalePhase;
+  breathPhaseTimeoutId = window.setTimeout(scheduleBreathPhase, phaseMs);
+}
+
+function startBreathingAnimation() {
+  clearBreathPhaseTimeout();
+  breathInhalePhase = true;
+  breathCycleCount = 0;
+  const orb = appScreen?.querySelector(".breath-orb");
+  if (orb) {
+    orb.classList.remove("is-expanded");
+    orb.style.setProperty("--breath-phase-ms", "2000ms");
+  }
+
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      scheduleBreathPhase();
+    });
+  });
+}
+
+function stopBreathingAnimation() {
+  clearBreathPhaseTimeout();
+  breathInhalePhase = true;
+  breathCycleCount = 0;
+}
+
+function updateFeedbackRestTime(remainingMs) {
+  const restTimeEl = appScreen?.querySelector("[data-rest-time]");
+  if (!restTimeEl) return false;
+  restTimeEl.textContent = formatCountdown(remainingMs);
+  return true;
+}
+
+function ensureRestTimerInterval() {
+  if (restTimerIntervalId) return;
+
+  restTimerIntervalId = window.setInterval(() => {
+    const remaining = getRestRemainingMs();
+    if (remaining <= 0) {
+      state.restTimerEndsAt = null;
+      clearRestTimerInterval();
+    }
+
+    if (state.view === "feedback") {
+      if (!updateFeedbackRestTime(remaining)) {
+        render();
+      }
+    } else {
+      saveState();
+    }
+  }, 1000);
+}
+
+function startRestCountdown() {
+  state.restTimerEndsAt = Date.now() + state.restTimerDurationMs;
+  ensureRestTimerInterval();
+}
+
+function calculateDynamicRest(rangeMin, rangeMax, repsAchieved) {
+  let baseRest;
+
+  if (rangeMax <= 6) {
+    baseRest = 210;
+  } else if (rangeMax <= 10) {
+    baseRest = 180;
+  } else if (rangeMax <= 15) {
+    baseRest = 120;
+  } else {
+    baseRest = 90;
+  }
+
+  if (repsAchieved < rangeMin) {
+    return {
+      totalSeconds: baseRest + 60,
+      baseSeconds: baseRest,
+      bonusSeconds: 60,
+      bonusType: "missedRange",
+      rangeMin,
+      rangeMax,
+    };
+  }
+
+  if (repsAchieved >= rangeMax) {
+    return {
+      totalSeconds: baseRest + 90,
+      baseSeconds: baseRest,
+      bonusSeconds: 90,
+      bonusType: "topRange",
+      rangeMin,
+      rangeMax,
+    };
+  }
+
+  const extraReps = repsAchieved - rangeMin;
+  return {
+    totalSeconds: baseRest + extraReps * 10,
+    baseSeconds: baseRest,
+    bonusSeconds: extraReps * 10,
+    bonusType: "inRange",
+    rangeMin,
+    rangeMax,
+  };
 }
 
 function activeExercise() {
@@ -158,6 +330,10 @@ function launchAddToHomeScreen() {
 
 function render() {
   if (!appScreen) return;
+
+  if (state.view !== "feedback") {
+    stopBreathingAnimation();
+  }
 
   if (state.view === "main") renderMain();
   if (state.view === "add") renderAddExercise();
@@ -260,7 +436,7 @@ function renderAddExercise() {
         <label class="line-title" for="draftWeight">Starting weight (lbs)</label>
         <div class="control">
           <button class="mini" data-act="draft-weight-down" type="button">-</button>
-          <input id="draftWeightInput" class="metric metric-input" type="number" min="0" step="5" value="${state.draftWeight}" />
+          <input id="draftWeightInput" class="metric metric-input" type="number" min="0" step="0.01" value="${formatWeight(state.draftWeight)}" />
           <button class="mini" data-act="draft-weight-up" type="button">+</button>
         </div>
       </div>
@@ -302,6 +478,7 @@ function renderWarmup() {
     <div class="card glow-green">
       <h3>${esc(exercise.name)}</h3>
       <p class="small warmup-subtitle">Warm-up pyramid</p>
+      <p class="small" style="margin:4px 0 10px;color:#b9c4da;">No rest needed between warm-up sets.</p>
       <div class="warmup-pyramid">
         ${tiers
           .map((tier, idx) => {
@@ -345,7 +522,7 @@ function renderSetInput() {
       <label>Weight (lbs)</label>
       <div class="control">
         <button class="mini" data-act="weight-down" type="button">-</button>
-        <input id="currentWeightInput" class="metric metric-input" type="number" min="0" step="5" value="${state.currentWeight}" />
+        <input id="currentWeightInput" class="metric metric-input" type="number" min="0" step="0.01" value="${formatWeight(state.currentWeight)}" />
         <button class="mini" data-act="weight-up" type="button">+</button>
       </div>
     </section>
@@ -399,6 +576,11 @@ function prepareNextWorkoutCarryOver() {
 function renderFeedback() {
   const feedback = state.lastFeedback || { kind: "steady", message: "Set logged." };
   const isGold = feedback.kind === "celebrate15" || feedback.kind === "underTen";
+  const restRemainingMs = getRestRemainingMs();
+  const fallbackRestMs =
+    typeof state.restTimerDurationMs === "number" ? state.restTimerDurationMs : DEFAULT_REST_COUNTDOWN_MS;
+  const restDisplayMs = restRemainingMs > 0 ? restRemainingMs : fallbackRestMs;
+  const restLabel = formatCountdown(restDisplayMs);
   const titleMap = {
     celebrate15: "15 Reps!",
     underTen: "Less Than 10",
@@ -422,10 +604,23 @@ function renderFeedback() {
       <div class="card ${isGold ? "glow-gold" : ""}">
         <p class="sub" style="margin-bottom:0;">${esc(feedback.message)}</p>
       </div>
+      <div class="rest-panel" aria-live="polite" aria-label="Rest countdown">
+        <div class="rest-timer-row">
+          <p class="line-title" style="margin:0;">Rest timer</p>
+          <p class="rest-time" data-rest-time>${restLabel}</p>
+        </div>
+        ${feedback.missedRangeBonusMessage ? `<p class="small" style="margin:0 0 8px;color:#f2cb05;">${esc(feedback.missedRangeBonusMessage)}</p>` : ""}
+        <div class="breath-wrap" aria-hidden="true">
+          <div class="breath-orb"></div>
+        </div>
+      </div>
+      <p class="small" style="margin:4px 0 8px;color:#b9c9ee;">💧 Hydration tip: sip water during this rest.</p>
       <button data-act="continue-next-set" class="btn ${isGold ? "btn-gold" : "btn-secondary"}" type="button">Start set ${state.activeSetIndex + 1} of 3</button>
       <button data-act="use-feedback-adjustment" class="btn btn-outline" type="button">${feedback.adjustLabel || "Keep current weight"}</button>
     </div>
   `;
+
+  startBreathingAnimation();
 }
 
 function renderExerciseDone() {
@@ -446,7 +641,7 @@ function renderExerciseDone() {
     <div class="card">
       <p class="line-title">Set summary</p>
       <ul class="exercise-list">${exercise.sets
-        .map((set, idx) => `<li class="exercise-item"><div><strong>Set ${idx + 1}</strong></div><div class="exercise-meta"><span>${set.weight} lbs x ${set.reps}</span></div></li>`)
+        .map((set, idx) => `<li class="exercise-item"><div><strong>Set ${idx + 1}</strong></div><div class="exercise-meta"><span>${formatWeight(set.weight)} lbs x ${set.reps}</span></div></li>`)
         .join("")}</ul>
       <button data-act="next-exercise" class="btn btn-primary" type="button">Start next exercise</button>
     </div>
@@ -475,7 +670,7 @@ function renderComplete() {
     <div class="card">
       <small class="small">Most improved</small>
       <h3 style="margin-top:3px;">${esc(best.name)}</h3>
-      <strong style="color:#45df7d;font-size:2rem;">+${best.amount} ${best.unit}</strong>
+      <strong style="color:#45df7d;font-size:2rem;">+${best.unit === "lbs" ? formatWeight(best.amount) : best.amount} ${best.unit}</strong>
     </div>
     <div class="card">
       <p class="line-title">Recovery suggestions</p>
@@ -518,12 +713,12 @@ function wireEvents() {
     draftWeightInput.addEventListener("input", () => {
       const next = Number(draftWeightInput.value);
       if (Number.isFinite(next)) {
-        state.draftWeight = Math.max(0, Math.round(next));
+        state.draftWeight = clampWeight(next);
         saveState();
       }
     });
     draftWeightInput.addEventListener("blur", () => {
-      draftWeightInput.value = String(state.draftWeight);
+      draftWeightInput.value = formatWeight(state.draftWeight);
     });
   }
 
@@ -532,12 +727,12 @@ function wireEvents() {
     currentWeightInput.addEventListener("input", () => {
       const next = Number(currentWeightInput.value);
       if (Number.isFinite(next)) {
-        state.currentWeight = Math.max(0, Math.round(next));
+        state.currentWeight = clampWeight(next);
         saveState();
       }
     });
     currentWeightInput.addEventListener("blur", () => {
-      currentWeightInput.value = String(state.currentWeight);
+      currentWeightInput.value = formatWeight(state.currentWeight);
     });
   }
 }
@@ -595,10 +790,18 @@ function handleAction(action, exerciseIndex = null, tierIndex = null) {
     removeExerciseAt(state.pendingRemoveExerciseIndex);
   }
 
-  if (action === "draft-weight-up") state.draftWeight += 5;
-  if (action === "draft-weight-down") state.draftWeight = Math.max(0, state.draftWeight - 5);
+  if (action === "draft-weight-up") state.draftWeight = clampWeight(state.draftWeight + 5);
+  if (action === "draft-weight-down") state.draftWeight = clampWeight(state.draftWeight - 5);
 
   if (action === "save-exercise") {
+    const draftWeightInput = document.getElementById("draftWeightInput");
+    if (draftWeightInput) {
+      const liveValue = Number(draftWeightInput.value);
+      if (Number.isFinite(liveValue)) {
+        state.draftWeight = clampWeight(liveValue);
+      }
+    }
+
     const name = state.draftName.trim();
     if (!name) {
       state.draftName = "Barbell Squat";
@@ -668,8 +871,8 @@ function handleAction(action, exerciseIndex = null, tierIndex = null) {
     state.view = "set";
   }
 
-  if (action === "weight-up") state.currentWeight += 5;
-  if (action === "weight-down") state.currentWeight = Math.max(0, state.currentWeight - 5);
+  if (action === "weight-up") state.currentWeight = clampWeight(state.currentWeight + 5);
+  if (action === "weight-down") state.currentWeight = clampWeight(state.currentWeight - 5);
   if (action === "reps-up") state.currentReps = Math.min(25, state.currentReps + 1);
   if (action === "reps-down") state.currentReps = Math.max(1, state.currentReps - 1);
 
@@ -736,10 +939,19 @@ function submitSet() {
     return;
   }
 
+  const currentWeightInput = document.getElementById("currentWeightInput");
+  if (currentWeightInput) {
+    const liveValue = Number(currentWeightInput.value);
+    if (Number.isFinite(liveValue)) {
+      state.currentWeight = clampWeight(liveValue);
+    }
+  }
+
   const previousReps = exercise.sets.length ? exercise.sets[exercise.sets.length - 1].reps : null;
+  const goal = getGoalFromDefaultReps(state.nextDefaultReps);
   const setEntry = {
     setNumber: state.activeSetIndex + 1,
-    weight: state.currentWeight,
+    weight: clampWeight(state.currentWeight),
     reps: state.currentReps,
     timestamp: Date.now(),
   };
@@ -752,7 +964,11 @@ function submitSet() {
     loggedAt: setEntry.timestamp,
   });
 
-  state.lastFeedback = buildFeedback(previousReps, setEntry.reps, setEntry.weight);
+  const dynamicRestSeconds = calculateDynamicRest(goal.min, goal.max, setEntry.reps);
+  state.restTimerDurationMs = dynamicRestSeconds.totalSeconds * 1000;
+  startRestCountdown();
+
+  state.lastFeedback = buildFeedback(previousReps, setEntry.reps, setEntry.weight, dynamicRestSeconds);
   state.nextDefaultReps = getNextDefaultReps(setEntry.reps);
   state.currentReps = state.nextDefaultReps;
 
@@ -768,13 +984,19 @@ function submitSet() {
   render();
 }
 
-function buildFeedback(previousReps, currentReps, currentWeight) {
+function buildFeedback(previousReps, currentReps, currentWeight, restInfo = null) {
+  const missedRangeBonusMessage =
+    restInfo && restInfo.bonusType === "missedRange"
+      ? `Recovery bonus rest: +${restInfo.bonusSeconds}s because you were below ${restInfo.rangeMin} reps.`
+      : null;
+
   if (currentReps === 15) {
     return {
       kind: "celebrate15",
       message: "Target achieved. Select level up to add 5 lbs and reset default reps to 10.",
       suggestedWeight: currentWeight + 5,
       adjustLabel: "Level up +5 lbs",
+      missedRangeBonusMessage,
     };
   }
 
@@ -784,6 +1006,7 @@ function buildFeedback(previousReps, currentReps, currentWeight) {
       message: "Rep threshold not met. Drop 5 lbs to protect form quality.",
       suggestedWeight: Math.max(0, currentWeight - 5),
       adjustLabel: "Lower by 5 lbs",
+      missedRangeBonusMessage,
     };
   }
 
@@ -793,6 +1016,7 @@ function buildFeedback(previousReps, currentReps, currentWeight) {
       message: "Great work. You added reps compared with your last set.",
       suggestedWeight: currentWeight,
       adjustLabel: "Keep current weight",
+      missedRangeBonusMessage,
     };
   }
 
@@ -802,6 +1026,7 @@ function buildFeedback(previousReps, currentReps, currentWeight) {
       message: "Reps slipped. Consider a bit more rest before the next set.",
       suggestedWeight: currentWeight,
       adjustLabel: "Keep current weight",
+      missedRangeBonusMessage,
     };
   }
 
@@ -810,6 +1035,7 @@ function buildFeedback(previousReps, currentReps, currentWeight) {
     message: "Rest as long as you need or have time for.",
     suggestedWeight: currentWeight,
     adjustLabel: "Keep current weight",
+    missedRangeBonusMessage,
   };
 }
 
@@ -817,7 +1043,7 @@ function applyFeedbackAdjustment() {
   if (!state.lastFeedback || typeof state.lastFeedback.suggestedWeight !== "number") {
     return;
   }
-  state.currentWeight = state.lastFeedback.suggestedWeight;
+  state.currentWeight = clampWeight(state.lastFeedback.suggestedWeight);
 
   if (state.lastFeedback.kind === "celebrate15") {
     state.nextDefaultReps = 10;
@@ -869,6 +1095,7 @@ function findMostImproved() {
 
 if (resetAllBtn) {
   resetAllBtn.addEventListener("click", () => {
+    clearRestTimerInterval();
     Object.assign(state, defaultState());
     render();
   });
