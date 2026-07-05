@@ -264,8 +264,6 @@ function renderAddExercise() {
           <button class="mini" data-act="draft-weight-up" type="button">+</button>
         </div>
       </div>
-
-      <p class="small">Keep titles concise and descriptive.</p>
       <button data-act="save-exercise" class="btn btn-primary" type="button">Add exercise</button>
     </div>
   `;
@@ -290,7 +288,7 @@ function renderWarmup() {
     { label: "Potentiation", value: `1 Rep @ ${warmupWeight(110)} lbs`, className: "tier-1" },
     { label: "", value: `3 Reps @ ${warmupWeight(75)} lbs`, className: "tier-2" },
     { label: "", value: `5 Reps @ ${warmupWeight(50)} lbs`, className: "tier-3" },
-    { label: "", value: `10 Reps @ ${warmupWeight(10)} lbs`, className: "tier-4 active" },
+    { label: "", value: `10 Reps @ ${warmupWeight(20)} lbs`, className: "tier-4 active" },
   ];
 
   appScreen.innerHTML = `
