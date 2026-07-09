@@ -166,6 +166,10 @@ function defaultState() {
     restTimerEndsAt: null,
     restTimerDurationMs: DEFAULT_REST_COUNTDOWN_MS,
     restTimerCompletedAt: null,
+    breathCalibrationTapCount: 0,
+    breathCalibrationLastTapAt: null,
+    breathCalibrationPhaseMs: null,
+    completeVolumeExpanded: false,
   };
 }
 
@@ -289,7 +293,7 @@ function applyFatigueRestTier(tierKey) {
 }
 
 function saveState() {
-  const shouldPersistDraft = ["warmup", "set", "feedback", "rest", "adjustment", "exerciseDone"].includes(state.view);
+  const shouldPersistDraft = ["warmup", "set", "rest", "adjustment", "exerciseDone"].includes(state.view);
   if (shouldPersistDraft && state.sessionStartedAt && state.exercises.length) {
     const activeRoutine = getActiveRoutine();
     state.inProgressSession = {
@@ -312,6 +316,9 @@ function saveState() {
         restTimerEndsAt: state.restTimerEndsAt,
         restTimerDurationMs: state.restTimerDurationMs,
         restTimerCompletedAt: state.restTimerCompletedAt,
+        breathCalibrationTapCount: state.breathCalibrationTapCount,
+        breathCalibrationLastTapAt: state.breathCalibrationLastTapAt,
+        breathCalibrationPhaseMs: state.breathCalibrationPhaseMs,
       },
     };
   }
@@ -360,9 +367,12 @@ function restoreInProgressSession() {
   state.restTimerEndsAt = Number(snapshot.restTimerEndsAt) || null;
   state.restTimerDurationMs = Number(snapshot.restTimerDurationMs) || DEFAULT_REST_COUNTDOWN_MS;
   state.restTimerCompletedAt = Number(snapshot.restTimerCompletedAt) || null;
-  state.view = ["warmup", "set", "feedback", "rest", "adjustment", "exerciseDone"].includes(snapshot.view)
-    ? snapshot.view
-    : "set";
+  state.breathCalibrationTapCount = Math.max(0, Number(snapshot.breathCalibrationTapCount) || 0);
+  state.breathCalibrationLastTapAt = Number(snapshot.breathCalibrationLastTapAt) || null;
+  state.breathCalibrationPhaseMs = Number(snapshot.breathCalibrationPhaseMs) || null;
+  const resumableViews = ["warmup", "set", "rest", "adjustment", "exerciseDone"];
+  const hasRestContext = typeof snapshot.restTimerEndsAt === "number" || Boolean(snapshot.selectedFatigueTierKey);
+  state.view = resumableViews.includes(snapshot.view) ? snapshot.view : hasRestContext ? "rest" : "set";
 }
 
 function startWorkoutFromRoutine(routine) {
@@ -388,6 +398,7 @@ function startWorkoutFromRoutine(routine) {
   state.restTimerEndsAt = null;
   state.restTimerDurationMs = DEFAULT_REST_COUNTDOWN_MS;
   state.restTimerCompletedAt = null;
+  state.completeVolumeExpanded = false;
   state.inProgressSession = null;
   state.view = "warmup";
 }
@@ -564,6 +575,16 @@ function getRestProgress() {
 }
 
 function getBreathPhaseDurationsMs() {
+  if (Number.isFinite(state.breathCalibrationPhaseMs) && state.breathCalibrationPhaseMs > 0) {
+    const basePhaseMs = Math.max(800, Math.min(6500, Math.round(state.breathCalibrationPhaseMs)));
+    const progress = getRestProgress();
+    const inhaleEndMs = Math.min(8500, Math.max(basePhaseMs * 1.2, basePhaseMs + 450));
+    const exhaleEndMs = Math.min(9500, Math.max(basePhaseMs * 1.8, basePhaseMs + 1200));
+    const inhaleMs = Math.round(lerp(basePhaseMs, inhaleEndMs, progress));
+    const exhaleMs = Math.round(lerp(basePhaseMs, exhaleEndMs, progress));
+    return { inhaleMs, exhaleMs };
+  }
+
   const tier = getFatigueTier(state.selectedFatigueTierKey);
   const profile = tier.breathProfile;
   const progress = getRestProgress();
@@ -772,15 +793,21 @@ function scheduleBreathPhase() {
   breathPhaseTimeoutId = window.setTimeout(scheduleBreathPhase, phaseMs);
 }
 
-function startBreathingAnimation() {
+function startBreathingAnimation(startWithInhalePhase = true) {
+  if (!(Number.isFinite(state.breathCalibrationPhaseMs) && state.breathCalibrationPhaseMs > 0)) {
+    stopBreathingAnimation();
+    return;
+  }
+
   clearBreathPhaseTimeout();
-  breathInhalePhase = true;
+  breathInhalePhase = Boolean(startWithInhalePhase);
   breathCycleCount = 0;
   breathLastFrequency = 180;
+  const { inhaleMs } = getBreathPhaseDurationsMs();
   const orb = appScreen?.querySelector(".breath-orb");
   if (orb) {
     orb.classList.remove("is-expanded");
-    orb.style.setProperty("--breath-phase-ms", "2000ms");
+    orb.style.setProperty("--breath-phase-ms", `${Math.round(inhaleMs)}ms`);
   }
 
   window.requestAnimationFrame(() => {
@@ -790,10 +817,103 @@ function startBreathingAnimation() {
   });
 }
 
+function resetBreathCalibration() {
+  state.breathCalibrationTapCount = 0;
+  state.breathCalibrationLastTapAt = null;
+  state.breathCalibrationPhaseMs = null;
+}
+
+function getCalibrationStatusLabel() {
+  if (Number.isFinite(state.breathCalibrationPhaseMs) && state.breathCalibrationPhaseMs > 0) {
+    const countdown = formatCountdown(state.restTimerDurationMs);
+    return `Rest timer set to ${countdown}.`;
+  }
+
+  const taps = Math.max(0, Number(state.breathCalibrationTapCount) || 0);
+  if (taps <= 0) return "Tap now, inhale, then tap again at exhale.";
+  return "Great. Keep your natural rhythm: tap, inhale, tap, exhale.";
+}
+
+function updateCalibrationStatusUI() {
+  const statusEl = appScreen?.querySelector("[data-calibration-status]");
+  if (!statusEl) return;
+
+  statusEl.textContent = getCalibrationStatusLabel();
+}
+
+function registerBreathCalibrationTap() {
+  if (state.view !== "rest") return;
+
+  const now = Date.now();
+  const lastTapAt = Number(state.breathCalibrationLastTapAt) || null;
+  const nextTapCount = Math.min(4, Math.max(0, state.breathCalibrationTapCount) + 1);
+  const isInhaleTap = nextTapCount % 2 === 1;
+  const orb = appScreen?.querySelector(".breath-orb");
+
+  if (orb) {
+    orb.style.setProperty("--breath-phase-ms", "220ms");
+    orb.classList.toggle("is-expanded", isInhaleTap);
+  }
+
+  if (lastTapAt) {
+    const intervalMs = Math.max(800, Math.min(6500, now - lastTapAt));
+    if (Number.isFinite(state.breathCalibrationPhaseMs) && state.breathCalibrationPhaseMs > 0) {
+      const priorSamples = Math.max(1, state.breathCalibrationTapCount - 1);
+      const averaged = (state.breathCalibrationPhaseMs * priorSamples + intervalMs) / (priorSamples + 1);
+      state.breathCalibrationPhaseMs = Math.round(averaged);
+    } else {
+      state.breathCalibrationPhaseMs = intervalMs;
+    }
+
+    applyBreathCalibratedRestTimer();
+
+    startBreathingAnimation(isInhaleTap);
+  }
+
+  state.breathCalibrationTapCount = nextTapCount;
+  state.breathCalibrationLastTapAt = now;
+  updateCalibrationStatusUI();
+  saveState();
+}
+
+function applyBreathCalibratedRestTimer() {
+  if (!(Number.isFinite(state.breathCalibrationPhaseMs) && state.breathCalibrationPhaseMs > 0)) {
+    return;
+  }
+
+  const selectedTier = getFatigueTier(state.selectedFatigueTierKey);
+  const minPhaseMs = 800;
+  const maxPhaseMs = 6500;
+  const clampedPhaseMs = Math.max(minPhaseMs, Math.min(maxPhaseMs, Math.round(state.breathCalibrationPhaseMs)));
+  const fastBreathingRatio = (maxPhaseMs - clampedPhaseMs) / (maxPhaseMs - minPhaseMs);
+  const adjustedMinRestSeconds = Math.max(45, Math.round(selectedTier.minRestSeconds * 0.65));
+  const adjustedMaxRestSeconds = Math.max(
+    adjustedMinRestSeconds + 10,
+    Math.round(selectedTier.maxRestSeconds * 0.75),
+  );
+  const calibratedRestSeconds = Math.round(
+    adjustedMinRestSeconds + (adjustedMaxRestSeconds - adjustedMinRestSeconds) * fastBreathingRatio,
+  );
+  const calibratedDurationMs = calibratedRestSeconds * 1000;
+
+  state.restTimerDurationMs = calibratedDurationMs;
+  state.restTimerEndsAt = Date.now() + calibratedDurationMs;
+  state.restTimerCompletedAt = null;
+  ensureRestTimerInterval();
+  syncScreenWakeLock();
+  updateVisibleRestTime(calibratedDurationMs);
+}
+
 function stopBreathingAnimation() {
   clearBreathPhaseTimeout();
   breathInhalePhase = true;
   breathCycleCount = 0;
+
+  const orb = appScreen?.querySelector(".breath-orb");
+  if (orb) {
+    orb.classList.remove("is-expanded");
+    orb.style.setProperty("--breath-phase-ms", "2000ms");
+  }
 
   if (breathAudioContext && breathAudioContext.state === "running") {
     breathAudioContext.suspend().catch(() => {});
@@ -804,14 +924,6 @@ function updateVisibleRestTime(remainingMs) {
   const restTimeEl = appScreen?.querySelector("[data-rest-time]");
   if (!restTimeEl) return false;
   restTimeEl.textContent = formatCountdown(remainingMs);
-
-  const restStatusEl = appScreen?.querySelector("[data-rest-status]");
-  if (restStatusEl) {
-    restStatusEl.textContent =
-      remainingMs <= 0
-        ? "Rest complete. Continue when ready."
-        : "Follow the breathing orb. Inhale as it expands, exhale as it contracts.";
-  }
 
   const restPanelEl = appScreen?.querySelector("[data-rest-panel]");
   if (restPanelEl) {
@@ -843,7 +955,7 @@ function ensureRestTimerInterval() {
     const hadActiveTimer = typeof state.restTimerEndsAt === "number";
     const remaining = getRestRemainingMs();
 
-    if (state.view === "feedback" || state.view === "rest") {
+    if (state.view === "rest") {
       if (!updateVisibleRestTime(remaining)) {
         render();
       }
@@ -1030,7 +1142,6 @@ function render() {
   if (state.view === "add") renderAddExercise();
   if (state.view === "warmup") renderWarmup();
   if (state.view === "set") renderSetInput();
-  if (state.view === "feedback") renderFeedback();
   if (state.view === "rest") renderRest();
   if (state.view === "adjustment") renderAdjustment();
   if (state.view === "exerciseDone") renderExerciseDone();
@@ -1367,51 +1478,6 @@ function prepareNextWorkoutCarryOver() {
   state.history = [];
 }
 
-function renderFeedback() {
-  const feedback = state.lastFeedback || {
-    kind: "steady",
-    title: "Set Logged",
-    subtitle: "Progression nudge",
-    message: "Set logged.",
-  };
-  const isGold = feedback.kind === "topRange" || feedback.kind === "belowRange";
-  const selectedTierKey = state.selectedFatigueTierKey;
-  const fatigueOptions = FATIGUE_TIERS.map((tier) => {
-    const selected = tier.key === selectedTierKey;
-    return `
-      <button
-        data-act="set-fatigue-tier"
-        data-fatigue-key="${tier.key}"
-        class="fatigue-btn ${selected ? "is-selected" : ""}"
-        type="button"
-        aria-pressed="${selected ? "true" : "false"}"
-      >
-        <span class="fatigue-emoji" aria-hidden="true">${tier.key === "smoked" ? "💀" : tier.key === "winded" ? "🥵" : tier.key === "solid" ? "💪" : "🤏"}</span>
-        <span class="fatigue-main">${esc(tier.label)}</span>
-      </button>
-    `;
-  }).join("");
-
-  appScreen.innerHTML = `
-    <div class="center">
-      <p class="badge">Fatigue check-in</p>
-      <h2 class="hero ${isGold ? "gold" : "hero-white"}" style="font-size:4rem;">How did that set feel?</h2>
-      <div class="card">
-        <p class="sub" style="margin-bottom:0;">Choose your fatigue level to set your rest timing.</p>
-      </div>
-      <div class="rest-panel" aria-label="Fatigue check-in">
-        <p class="line-title" style="margin:0 0 8px;">How are you feeling?</p>
-        <p class="fatigue-rank-label" style="margin:0 0 6px;">Highest fatigue</p>
-        <div class="fatigue-grid" role="radiogroup" aria-label="Fatigue tier quick tap">
-          ${fatigueOptions}
-        </div>
-        <p class="fatigue-rank-label fatigue-rank-low" style="margin:6px 0 0;">Lowest fatigue</p>
-      </div>
-      <p class="small" style="margin:8px 0 0;color:#b9c4da;">Pick your fatigue level to begin rest.</p>
-    </div>
-  `;
-}
-
 function renderRest() {
   const feedback = state.lastFeedback || {
     kind: "steady",
@@ -1425,6 +1491,7 @@ function renderRest() {
   const restDisplayMs = typeof state.restTimerEndsAt === "number" ? restRemainingMs : state.restTimerDurationMs;
   const restLabel = formatCountdown(restDisplayMs);
   const restComplete = !state.restTimerEndsAt && Boolean(state.restTimerCompletedAt);
+  const calibrationStatus = getCalibrationStatusLabel();
 
   appScreen.innerHTML = `
     <div class="center">
@@ -1435,27 +1502,28 @@ function renderRest() {
           <p class="line-title" style="margin:0;">Rest timer</p>
           <p class="rest-time" data-rest-time>${restLabel}</p>
         </div>
-        <p class="small" style="margin:0 0 8px;color:#b9c4da;">${esc(selectedTier.description)} Window: ${esc(selectedTier.restRangeLabel)}.</p>
-        <p class="rest-status" data-rest-status>${
-          restComplete
-            ? "Rest complete. Continue when ready."
-            : "Follow the breathing orb. Inhale as it expands, exhale as it contracts."
-        }</p>
-        <div class="breath-wrap" aria-hidden="true">
-          <div class="breath-orb"></div>
+        <p class="line-title" style="margin:0 0 6px;">Tap to calibrate</p>
+        <p class="small" style="margin:0 0 8px;color:#b9c4da;">Tap, inhale, tap, exhale in your current rhythm.</p>
+        <div class="breath-wrap">
+          <button data-act="tap-breath-calibrate" class="breath-orb-btn" type="button" aria-label="Tap breath ball to calibrate pace">
+            <div class="breath-orb"></div>
+          </button>
         </div>
+        <p class="small" data-calibration-status style="margin:8px 0 0;color:#b9c4da;">${esc(calibrationStatus)}</p>
+        <button data-act="reset-breath-calibration" class="btn btn-outline" type="button">Reset calibration</button>
       </div>
       <button data-act="continue-next-set" class="btn ${isGold ? "btn-gold" : "btn-secondary"}" type="button">${
         restComplete ? "Rest complete - continue" : "See next-set suggestion"
       }</button>
-      <button data-act="go-feedback" class="btn btn-outline" type="button">Change fatigue rating</button>
     </div>
   `;
 
   if (restComplete) {
     stopBreathingAnimation();
-  } else {
+  } else if (Number.isFinite(state.breathCalibrationPhaseMs) && state.breathCalibrationPhaseMs > 0) {
     startBreathingAnimation();
+  } else {
+    stopBreathingAnimation();
   }
 
   syncScreenWakeLock();
@@ -1523,9 +1591,31 @@ function renderComplete() {
     (sum, exercise) => sum + exercise.sets.reduce((setSum, set) => setSum + set.weight * set.reps, 0),
     0,
   );
-  const tons = (volumeLbs / 2000).toFixed(2);
+  const pounds = Math.round(volumeLbs);
   const duration = Math.max(1, Math.ceil((Date.now() - (state.sessionStartedAt || Date.now())) / 60000));
   const best = findMostImproved();
+  const hasLoggedSets = state.exercises.some((exercise) => Array.isArray(exercise.sets) && exercise.sets.length > 0);
+  const breakdownRows = state.exercises
+    .filter((exercise) => Array.isArray(exercise.sets) && exercise.sets.length > 0)
+    .map((exercise) => {
+      const subtotal = exercise.sets.reduce((sum, set) => sum + set.weight * set.reps, 0);
+      const setRows = exercise.sets
+        .map(
+          (set, idx) =>
+            `<li class="exercise-item"><div><strong>Set ${idx + 1}</strong></div><div class="exercise-meta"><span>${formatWeight(set.weight)} lbs x ${set.reps}</span></div></li>`,
+        )
+        .join("");
+
+      return `
+        <section class="volume-exercise-block">
+          <p class="line-title volume-exercise-title">Exercise</p>
+          <h3 class="volume-exercise-name">${esc(exercise.name)}</h3>
+          <p class="small volume-exercise-meta">${exercise.sets.length} sets • ${Math.round(subtotal)} lbs</p>
+          <ul class="exercise-list volume-set-list">${setRows}</ul>
+        </section>
+      `;
+    })
+    .join("");
 
   appScreen.innerHTML = `
     <div class="center">
@@ -1535,8 +1625,22 @@ function renderComplete() {
     </div>
     <div class="stats">
       <div class="stat"><small class="small">Duration</small><strong>${duration}</strong><span class="small">min</span></div>
-      <div class="stat"><small class="small">Volume</small><strong>${tons}</strong><span class="small">tons</span></div>
+      <button
+        data-act="toggle-volume-breakdown"
+        class="stat stat-btn ${state.completeVolumeExpanded ? "is-expanded" : ""}"
+        type="button"
+        aria-expanded="${state.completeVolumeExpanded ? "true" : "false"}"
+      >
+        <small class="small">Volume</small>
+        <strong>${pounds}</strong>
+        <span class="small">lbs ${hasLoggedSets ? (state.completeVolumeExpanded ? "• Tap to collapse" : "• Tap to expand") : ""}</span>
+      </button>
     </div>
+    ${
+      state.completeVolumeExpanded && hasLoggedSets
+        ? `<div class="card volume-breakdown-card"><p class="line-title" style="margin-top:0;">Volume breakdown</p>${breakdownRows}</div>`
+        : ""
+    }
     <div class="card">
       <small class="small">Most improved</small>
       <h3 style="margin-top:3px;">${esc(best.name)}</h3>
@@ -1637,7 +1741,6 @@ function handleAction(
   if (action === "go-main") state.view = "main";
   if (action === "go-add") state.view = "add";
   if (action === "go-preflight") state.view = state.activeRoutineId ? "preflight" : "main";
-  if (action === "go-feedback") state.view = "feedback";
 
   if (action === "create-routine") {
     const routine = {
@@ -1794,13 +1897,25 @@ function handleAction(
     return;
   }
 
-  if (action === "set-fatigue-tier" && fatigueKey) {
-    applyFatigueRestTier(fatigueKey);
-    state.view = "rest";
+  if (action === "tap-breath-calibrate") {
+    registerBreathCalibrationTap();
+    return;
+  }
+
+  if (action === "reset-breath-calibration") {
+    resetBreathCalibration();
+    startBreathingAnimation();
+    updateCalibrationStatusUI();
+    saveState();
+    return;
   }
 
   if (action === "continue-next-set") {
     state.view = "adjustment";
+  }
+
+  if (action === "toggle-volume-breakdown") {
+    state.completeVolumeExpanded = !state.completeVolumeExpanded;
   }
 
   if (action === "use-feedback-adjustment") {
@@ -1817,6 +1932,7 @@ function handleAction(
     state.activeSetIndex = 0;
     const next = activeExercise();
     if (!next) {
+      state.completeVolumeExpanded = false;
       state.view = "complete";
     } else {
       state.currentWeight = next.baseWeight;
@@ -1828,6 +1944,7 @@ function handleAction(
   }
 
   if (action === "skip-to-complete") {
+    state.completeVolumeExpanded = false;
     state.view = "complete";
   }
 
@@ -1846,6 +1963,7 @@ function handleAction(
     state.installHelpOpen = false;
     state.restTimerEndsAt = null;
     state.restTimerCompletedAt = null;
+    state.completeVolumeExpanded = false;
     releaseScreenWakeLock();
   }
 
@@ -1899,6 +2017,7 @@ function submitSet() {
   state.restTimerEndsAt = null;
   state.restTimerDurationMs = DEFAULT_REST_COUNTDOWN_MS;
   state.restTimerCompletedAt = null;
+  resetBreathCalibration();
 
   state.lastFeedback = buildFeedback(previousReps, setEntry.reps, setEntry.weight, null, goal);
   state.nextDefaultReps = getNextTargetReps(goal, setEntry.reps);
@@ -1906,7 +2025,9 @@ function submitSet() {
 
   if (exercise.sets.length < plannedSetCount) {
     state.activeSetIndex = exercise.sets.length;
-    state.view = "feedback";
+    const recommendedTier = recommendFatigueTier(goal, setEntry.reps);
+    applyFatigueRestTier(recommendedTier);
+    state.view = "rest";
   } else if (state.activeExerciseIndex < state.exercises.length - 1) {
     state.view = "exerciseDone";
   } else {
@@ -1915,6 +2036,7 @@ function submitSet() {
       routine.lastPerformedAt = Date.now();
     }
     state.inProgressSession = null;
+    state.completeVolumeExpanded = false;
     state.view = "complete";
   }
 

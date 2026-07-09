@@ -368,11 +368,53 @@ body {
   background: #13161d;
 }
 
+.stat-btn {
+  width: 100%;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stat-btn.is-expanded {
+  border-color: #79a9ff;
+  box-shadow: inset 0 0 0 1px rgba(121, 169, 255, 0.35);
+}
+
+.stat-btn:focus-visible {
+  outline: 2px solid #79a9ff;
+  outline-offset: 2px;
+}
+
 .stat strong {
   display: block;
   font-family: "Barlow Semi Condensed", sans-serif;
   font-size: 2rem;
   color: #ebedf3;
+}
+
+.volume-breakdown-card {
+  margin-top: 8px;
+}
+
+.volume-exercise-block + .volume-exercise-block {
+  margin-top: 10px;
+}
+
+.volume-exercise-title {
+  margin: 0 0 6px;
+}
+
+.volume-exercise-name {
+  margin: 0 0 4px;
+  font-family: "Barlow Semi Condensed", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #e6eeff;
+}
+
+.volume-exercise-meta {
+  margin: 0 0 8px;
+  color: #9fb4df;
 }
 
 .pill-row {
@@ -835,6 +877,22 @@ body {
   border-radius: 10px;
   border: 1px solid #2a3243;
   background: radial-gradient(circle at 50% 35%, rgba(79, 141, 255, 0.16), rgba(11, 15, 23, 0.92));
+}
+
+.breath-orb-btn {
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  width: 180px;
+  height: 180px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.breath-orb-btn:focus-visible {
+  outline: 2px solid #79a9ff;
+  outline-offset: 3px;
 }
 
 .breath-orb {
